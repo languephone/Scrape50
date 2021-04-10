@@ -40,7 +40,12 @@ def get_top_products(category, link, headers):
         except:
             product_id = None
 
-        item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id}
+        try:
+            image_link = product.find('img').get('src').replace('\n', "")
+        except:
+            image_link = None
+
+        item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link}
         data.append(item)
 
     return data
