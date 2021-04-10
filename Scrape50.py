@@ -2,17 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-foundation_link = "https://www.lookfantastic.com/health-beauty/make-up/complexion/foundation-makeup.list"
-mascara_link = "https://www.lookfantastic.com/health-beauty/make-up/eyes/mascaras.list"
+base_link = "https://www.lookfantastic.com/health-beauty/"
+sorting_modifier = "?pageNumber=1&sortOrder=salesRank"
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+data = []
 
 def get_top_products(category, link, headers):
     """Scrape info from top products page of specified category link"""
 
     # Modify link to sort by top sales rank
-    link_modified = link + "?pageNumber=1&sortOrder=salesRank"
+    link_modified = base_link + link + sorting_modifier
 
-    data = []
+
     page = requests.get(link_modified, headers=headers).text
     soup = BeautifulSoup(page, 'html.parser')
     product_list = soup.find_all('li', {"class": "productListProducts_product"})
@@ -48,11 +49,18 @@ def get_top_products(category, link, headers):
         item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link}
         data.append(item)
 
-    return data
 
-foundations = get_top_products('Foundation', foundation_link, headers)
+# TODO find replacement for hard coding category links
+categories = {
+    'foundation': "make-up/complexion/foundation-makeup.list",
+    'mascara': "make-up/eyes/mascaras.list"
+    }
 
-df = pd.DataFrame(foundations)
+# Loop through categories, appending to list, then append to pandas dictionary
+for category, link in categories.items():
+    get_top_products(category, link, headers)
+
+df = pd.DataFrame(data)
 df.to_csv('data_output.csv', index=False)
 
 print(df)
