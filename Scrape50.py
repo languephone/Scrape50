@@ -22,9 +22,20 @@ for product in product_list:
     except:
         price = None
 
-    mascara = {'name': name, 'price': price}
+    try:
+        brand = product.find('span', {"class": "js-enhanced-ecommerce-data"}).get('data-product-brand').replace('\n', "")
+    except:
+        brand = None
+
+    try:
+        product_id = product.find('span', {"class": "js-enhanced-ecommerce-data"}).get('data-product-master-product-id').replace('\n', "")
+    except:
+        product_id = None
+
+    mascara = {'name': name, 'price': price, 'brand': brand, 'product_id': product_id}
     data.append(mascara)
 
 df = pd.DataFrame(data)
+df.to_csv('data_output.csv')
 
 print(df)
