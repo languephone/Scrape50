@@ -27,7 +27,7 @@ def get_top_products(category, link, headers):
             name = None
 
         try:
-            price = product_data.get('data-product-price').replace('\n', "")
+            price = float(product_data.get('data-product-price').replace('\n', "").replace("£", ""))
         except:
             price = None
 
@@ -62,5 +62,3 @@ for category, link in categories.items():
 
 df = pd.DataFrame(data)
 df.to_csv('data_output.csv', index=False)
-
-print(df)
