@@ -18,7 +18,8 @@ def category(category):
         for row in dict_reader:
             if row['category'] == category:
                 products.append(row)
-    
+    products.sort(key = lambda i: float(i['price']))
+
 
 
     return render_template("index.html", category=category, products=products)
