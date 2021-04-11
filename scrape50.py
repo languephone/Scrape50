@@ -27,7 +27,7 @@ def get_top_products(category, link, headers):
             name = None
 
         try:
-            price = float(product_data.get('data-product-price').replace('\n', "").replace("£", ""))
+            price = product_data.get('data-product-price').replace('\n', "").replace("£", "")
         except:
             price = None
 
