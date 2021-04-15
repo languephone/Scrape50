@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
 
+site = "Look Fantastic"
 base_link = "https://www.lookfantastic.com/health-beauty/"
 sorting_modifier = "?pageNumber=1&sortOrder=salesRank"
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
@@ -58,23 +59,28 @@ categories = {
     }
 
 
-# Create a database connection to a SQLite database
-db = sqlite3.connect('products.db')
-cur = db.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS products(
-    id integer PRIMARY KEY,
-    name text NOT NULL,
-    price real,
-    img_link text,
-    site_id text NOT NULL,
-    site_name text NOT NULL,
-    scrapetime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
-db.commit()
+def write_to_sql(data):
+    """Take a list of dictionaries of scraped data, and write to a SQLite database"""
+    
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    
+    cur = db.cursor()
+    cur.execute("""CREATE TABLE IF NOT EXISTS products(
+        id integer PRIMARY KEY,
+        name text NOT NULL,
+        price real,
+        img_link text,
+        site_id text NOT NULL,
+        site_name text NOT NULL,
+        scrapetime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
+    db.commit()
+    
+    cur.execute("""INSERT INTO products (name, price, img_link, site_name)
+        VALUES(?, ?, ?, ?)""", [data['name'], data['price'], data['image_link'], data['brand']])
+    
+    db.close()
 
-cur.execute("""INSERT INTO products (name, price, img_link, site_name)
-    VALUES(?, ?, ?, ?)""", [data['name'], data['price'], data['image_link'], data['brand']])
-
-db.close()
 
 # Loop through categories, appending to list, then append to pandas dictionary
 for category, link in categories.items():
