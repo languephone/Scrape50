@@ -24,7 +24,7 @@ def category(category):
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT * FROM products""")
+    cur.execute("""SELECT * FROM products WHERE category=?""", (category,))
     product_rows = cur.fetchall()
     db.close()
 
