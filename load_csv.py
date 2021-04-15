@@ -12,8 +12,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS products(
     price real,
     img_link text,
     site_id text,
-    site_name text,
-    scrapetime datetime NOT NULL DEFAULT CURRENT_DATE);""")
+    scrapedate datetime NOT NULL DEFAULT CURRENT_DATE);""")
 db.commit()
 
 filename = "data_output.csv"
@@ -24,6 +23,6 @@ with open(filename) as f:
 
 
 for row in data:
-    cur.execute("INSERT INTO products(name, price, img_link, site_name) VALUES(?, ?, ?, ?)", (row['name'], row['price'], row['image_link'], row['brand']))
+    cur.execute("INSERT INTO products(name, price, img_link, site_id) VALUES(?, ?, ?, ?)", (row['name'], row['price'], row['image_link'], row['site_id']))
 db.commit()
 db.close()

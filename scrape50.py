@@ -48,7 +48,7 @@ def get_top_products(category, link, headers):
         except:
             image_link = None
 
-        item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link}
+        item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': site}
         data.append(item)
 
 
