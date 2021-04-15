@@ -7,6 +7,11 @@ site = "Look Fantastic"
 base_link = "https://www.lookfantastic.com/health-beauty/"
 sorting_modifier = "?pageNumber=1&sortOrder=salesRank"
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+# TODO find replacement for hard coding category links
+categories = {
+    'foundation': "make-up/complexion/foundation-makeup.list",
+    'mascara': "make-up/eyes/mascaras.list"
+    }
 data = []
 
 def get_top_products(category, link, headers):
@@ -52,39 +57,36 @@ def get_top_products(category, link, headers):
         data.append(item)
 
 
-# TODO find replacement for hard coding category links
-categories = {
-    'foundation': "make-up/complexion/foundation-makeup.list",
-    'mascara': "make-up/eyes/mascaras.list"
-    }
-
 
 def write_to_sql(data):
     """Take a list of dictionaries of scraped data, and write to a SQLite database"""
     
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
-    
     cur = db.cursor()
     cur.execute("""CREATE TABLE IF NOT EXISTS products(
         id integer PRIMARY KEY,
         name text NOT NULL,
+        brand text,
         price real,
         img_link text,
-        site_id text NOT NULL,
-        site_name text NOT NULL,
-        scrapetime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);""")
+        site_id text,
+        scrapedate datetime NOT NULL DEFAULT CURRENT_DATE);""")
     db.commit()
-    
+   
+   # Insert rows into database
     cur.execute("""INSERT INTO products (name, price, img_link, site_name)
         VALUES(?, ?, ?, ?)""", (data['name'], data['price'], data['image_link'], data['brand'], data['site_id']))
+    db.commit()
     
     db.close()
 
+def write_to_csv(data):
+    """Take a list of dictionaries of scraped data, and write to a CSV file"""
+
+    df = pd.DataFrame(data)
+    df.to_csv('data_output.csv', index=False)
 
 # Loop through categories, appending to list, then append to pandas dictionary
 for category, link in categories.items():
     get_top_products(category, link, headers)
-
-df = pd.DataFrame(data)
-df.to_csv('data_output.csv', index=False)
