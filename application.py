@@ -8,9 +8,6 @@ def gbp(value):
     """Format value as GBP."""
     return f"£{value:,.2f}"
 
-
-
-
 # Custom filter
 app.jinja_env.filters["gbp"] = gbp
 
@@ -29,7 +26,6 @@ def category(category):
     cur.execute("""SELECT brand FROM products""")
     brands = set(x[0] for x in cur.fetchall())
     db.close()
-
 
     # Convert SQL response from list of tuples to list of dictionaries
     products = []

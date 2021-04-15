@@ -60,7 +60,7 @@ def get_top_products(category, link, headers):
 
 def write_to_sql(data):
     """Take a list of dictionaries of scraped data, and write to a SQLite database"""
-    
+
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
@@ -74,12 +74,11 @@ def write_to_sql(data):
         site_id text,
         scrapedate datetime NOT NULL DEFAULT CURRENT_DATE);""")
     db.commit()
-   
+
    # Insert rows into database
     cur.execute("""INSERT INTO products (name, price, img_link, site_name)
         VALUES(?, ?, ?, ?, ?)""", (data['name'], data['brand'], data['price'], data['image_link'], data['category'], data['site_id']))
     db.commit()
-    
     db.close()
 
 def write_to_csv(data):
@@ -88,6 +87,10 @@ def write_to_csv(data):
     df = pd.DataFrame(data)
     df.to_csv('data_output.csv', index=False)
 
-# Loop through categories, appending to list, then append to pandas dictionary
+# Loop through categories, appending to list
 for category, link in categories.items():
     get_top_products(category, link, headers)
+
+# Call write_to_x functions to send data to CSV and SQL
+write_to_csv(data)
+write_to_sql(data)
