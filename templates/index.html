@@ -17,9 +17,9 @@
             <h3>Showing {{ category }}</h3>
         </div>
         <div class="container">
-            {% for product in products %}
-            <input type="checkbox" name="{{ product['brand'] }}" value="{{ product['brand'] }}" checked>
-            <label for="{{ product['brand'] }}">{{ product['brand'] }}</label>
+            {% for brand in brands %}
+            <input type="checkbox" name="{{ brand }}" value="{{ brand }}" checked>
+            <label for="{{ brand }}">{{ brand }}</label>
             {% endfor %}
         </div>
         <div class="container">
