@@ -9,6 +9,7 @@ cur = db.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS products(
     id integer PRIMARY KEY,
     name text NOT NULL,
+    brand text,
     price real,
     img_link text,
     site_id text,
@@ -23,6 +24,6 @@ with open(filename) as f:
 
 
 for row in data:
-    cur.execute("INSERT INTO products(name, price, img_link, site_id) VALUES(?, ?, ?, ?)", (row['name'], row['price'], row['image_link'], row['site_id']))
+    cur.execute("INSERT INTO products(name, brand, price, img_link, site_id) VALUES(?, ?, ?, ?, ?)", (row['name'], row['brand'], row['price'], row['image_link'], row['site_id']))
 db.commit()
 db.close()

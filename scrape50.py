@@ -77,7 +77,7 @@ def write_to_sql(data):
     db.commit()
     
     cur.execute("""INSERT INTO products (name, price, img_link, site_name)
-        VALUES(?, ?, ?, ?)""", [data['name'], data['price'], data['image_link'], data['brand']])
+        VALUES(?, ?, ?, ?)""", (data['name'], data['price'], data['image_link'], data['brand'], data['site_id']))
     
     db.close()
 
