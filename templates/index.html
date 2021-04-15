@@ -26,10 +26,10 @@
             <div class="row row-cols-1 row-cols-md-6 g-4">
                 {% for product in products %}
                 <div class="col">
-                    <div class="card">
+                    <div class="card h-100">
                         <img src="{{ product['image_link'] }}" alt="{{ product['name'] }}"/>
                         <div class="card-body">
-                            <h6 class="card-title">{{ product['name'] }}</h6>
+                            <p class="card-text">{{ product['name'] }}</p>
                             <h5 class="card-text">{{ product['price'] | gbp }}</h5>
                         </div>
                     </div>
