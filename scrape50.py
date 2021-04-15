@@ -70,14 +70,15 @@ def write_to_sql(data):
         brand text,
         price real,
         img_link text,
-        category text NOT NULL
+        category text NOT NULL,
         site_id text,
         scrapedate datetime NOT NULL DEFAULT CURRENT_DATE);""")
     db.commit()
 
    # Insert rows into database
-    cur.execute("""INSERT INTO products (name, price, img_link, site_name)
-        VALUES(?, ?, ?, ?, ?)""", (data['name'], data['brand'], data['price'], data['image_link'], data['category'], data['site_id']))
+    for row in data:
+        cur.execute("INSERT INTO products(name, brand, price, img_link, category, site_id) VALUES(?, ?, ?, ?, ?, ?)",
+            (row['name'], row['brand'], row['price'], row['image_link'], row['category'], row['site_id']))
     db.commit()
     db.close()
 
