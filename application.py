@@ -24,7 +24,7 @@ def category(category):
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT * FROM products WHERE category=?""", (category,))
+    cur.execute("""SELECT * FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     product_rows = cur.fetchall()
     cur.execute("""SELECT brand FROM products""")
     brands = set(x[0] for x in cur.fetchall())
