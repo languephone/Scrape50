@@ -56,6 +56,14 @@ def get_top_products(category, link, headers):
         item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': site}
         data.append(item)
 
+def clean_product_name(product_name):
+    """Remove colour and/or shade information from product name"""
+
+    replacements = ['- Black', '(Various Shades)', '01']
+    for replacement in replacements:
+        product_name = product_name.replace(replacement, "").strip()
+
+    return product_name
 
 
 def write_to_sql(data):
