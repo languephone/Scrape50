@@ -23,8 +23,8 @@ def category(category):
     cur = db.cursor()
     cur.execute("""SELECT * FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     product_rows = cur.fetchall()
-    cur.execute("""SELECT brand FROM products""")
-    brands = set(x[0] for x in cur.fetchall())
+    cur.execute("""SELECT DISTINCT brand FROM products""")
+    brands = [x[0] for x in cur.fetchall()]
     db.close()
 
     # Convert SQL response from list of tuples to list of dictionaries
