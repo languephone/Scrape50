@@ -29,6 +29,7 @@
                         <h5 class="card-text">{{ product['price'] | gbp }}</h5>
                         <img src="{{ product['image_link'] }}" alt="{{ product['name'] }}"/>
                         <p class="card-text">{{ product['name'] }}</p>
+                        <button type="button">Hide</button>
                     </div>
                 {% endfor %}
             </div>
