@@ -3,6 +3,16 @@ img {
     height: auto;
 }
 
-td, th {
-    max-width: 200px;
+.grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    align-items: center;
+    font-size: 8pt;
 }
