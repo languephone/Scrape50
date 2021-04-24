@@ -13,7 +13,7 @@ app.jinja_env.filters["gbp"] = gbp
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("layout.html")
 
 @app.route("/<string:category>")
 def category(category):
