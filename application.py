@@ -13,7 +13,14 @@ app.jinja_env.filters["gbp"] = gbp
 
 @app.route("/")
 def index():
-    return render_template("layout.html")
+
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    cur = db.cursor()
+    cur.execute("""SELECT DISTINCT category FROM products""")
+    categories = [x[0] for x in cur.fetchall()]
+    db.close()
+    return render_template("index.html", categories=categories)
 
 @app.route("/<string:category>")
 def category(category):
@@ -25,6 +32,8 @@ def category(category):
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
+    cur.execute("""SELECT DISTINCT category FROM products""")
+    categories = [x[0] for x in cur.fetchall()]
     db.close()
 
     # Convert SQL response from list of tuples to list of dictionaries
@@ -35,4 +44,4 @@ def category(category):
 
     products.sort(key = lambda i: float(i['price']))
 
-    return render_template("index.html", category=category, products=products, brands=brands)
+    return render_template("index.html", category=category, products=products, brands=brands, categories=categories)
