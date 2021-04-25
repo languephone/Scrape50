@@ -1,4 +1,4 @@
-img {
+.card-img {
     width: 120px;
     height: auto;
 }
@@ -15,4 +15,23 @@ img {
     /*justify-content: center;*/
     align-items: center;
     font-size: 8pt;
+}
+
+.logo-box {
+    margin: 30px;
+    display:flex;
+    min-width: 800px;
+    max-width: 1000px;
+    align-items: center;
+    align-self: center;
+}
+
+.logo-text {
+    margin: 0px 30px;
+    font-size: 24px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+.navbar-custom {
+    background-color: #0086BE;
 }
