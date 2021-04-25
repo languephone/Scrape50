@@ -49,7 +49,7 @@ class Scraper:
         """Take a list of dictionaries of scraped data, and write to a CSV file"""
 
         df = pd.DataFrame(self.data)
-        df.to_csv('data_output.csv', index=False)
+        df.to_csv('data_output_classes.csv', index=False)
 
 
 class LookFantastic(Scraper):
@@ -57,7 +57,7 @@ class LookFantastic(Scraper):
 
     def __init__(self):
         """Initialize attributes of the parent class."""
-        super().__init()
+        super().__init__()
         self.site = "Look Fantastic"
         self.base_link = "https://www.lookfantastic.com/health-beauty/"
         self.sorting_modifier = "?pageNumber=1&sortOrder=salesRank"
@@ -108,11 +108,18 @@ class LookFantastic(Scraper):
             except:
                 image_link = None
 
-            item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': site}
+            item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
             self.data.append(item)
 
+    def loop_through_categories(self):
+        """Loop through specified categories and call get_top_products()."""
+        for category in self.categories:
+            self.get_top_products(category)
 
+    def clean_all_products(self):
+        for product in self.data:
+            product['name'] = self.clean_product_name(products['name'])
 
-# Call write_to_x functions to send data to CSV and SQL
-write_to_csv(data)
-write_to_sql(data)
+lf = LookFantastic()
+lf.loop_through_categories()
+lf.write_to_csv()
