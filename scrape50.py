@@ -17,14 +17,19 @@ class Scraper:
 
     def clean_all_products(self):
         for product in self.data:
-            product['name'] = self.clean_product_name(products['name'])
+            product['name'] = self._clean_product_name(product['name'], product['brand'])
 
-    def clean_product_name(self, product_name):
-        """Remove colour and/or shade information from product name"""
+    def _clean_product_name(self, product_name, brand):
+        """Remove brand, colour and/or shade information from product name"""
+
+        # Remove brand name from product name if exists:
+        product_name = product_name.replace(brand, "").strip()
 
         replacements = ['- Black', '(Various Shades)', '01']
         for replacement in replacements:
             product_name = product_name.replace(replacement, "").strip()
+
+
 
         return product_name
 
@@ -182,10 +187,12 @@ class HouseOfFraser(Scraper):
 
 
 
-# lf = LookFantastic()
-# lf.loop_through_categories()
-# lf.write_to_csv()
+lf = LookFantastic()
+lf.loop_through_categories()
+lf.clean_all_products()
+lf.write_to_csv()
 
 hof = HouseOfFraser()
-hof.loop_through_categories()
+hof.loop_through_categories()g
+hof.clean_all_products()
 hof.write_to_csv()
