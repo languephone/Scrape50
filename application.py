@@ -44,4 +44,4 @@ def category(category):
 
     products.sort(key = lambda i: float(i['price']))
 
-    return render_template("index.html", category=category, products=products, brands=brands, categories=categories)
+    return render_template("category.html", category=category, products=products, brands=brands, categories=categories)
