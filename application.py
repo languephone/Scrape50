@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import csv
 import sqlite3
+from scrapers import LookFantastic, HouseOfFraser
 
 app = Flask(__name__)
 
@@ -11,16 +12,22 @@ def gbp(value):
 # Custom filter
 app.jinja_env.filters["gbp"] = gbp
 
-@app.route("/")
-def index():
-
+# Function to get distinct categories
+def get_category_list():
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT DISTINCT category FROM products""")
     categories = [x[0] for x in cur.fetchall()]
     db.close()
+    return categories
+
+@app.route("/")
+def index():
+
+    categories = get_category_list()
     return render_template("index.html", categories=categories)
+
 
 @app.route("/<string:category>")
 def category(category):
@@ -45,3 +52,55 @@ def category(category):
     products.sort(key = lambda i: float(i['price']))
 
     return render_template("category.html", category=category, products=products, brands=brands, categories=categories)
+
+
+@app.route("/brands")
+def brands():
+
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    cur = db.cursor()
+    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
+    brand_rows = cur.fetchall()
+    cur.execute("""SELECT DISTINCT category FROM products""")
+    categories = [x[0] for x in cur.fetchall()]
+    db.close()
+
+    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
+
+    # Convert SQL response from list of tuples to list of dictionaries
+    brands = []
+    keys = ('brand', 'site', 'scrapedate')
+    for row in brand_rows:
+        brands.append(dict(zip(keys, row)))
+
+    #brands.sort(key = lambda i: i['brand'])
+
+    return render_template("brand.html", brands=brands, categories=categories)
+
+
+@app.route("/admin")
+def admin():
+
+    categories = get_category_list()
+    lf = LookFantastic()
+    lf.get_all_brands()
+
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    cur = db.cursor()
+    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
+    brand_rows = cur.fetchall()
+    db.close()
+
+    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
+
+    # Convert SQL response from list of tuples to list of dictionaries
+    brands = []
+    keys = ('brand', 'site', 'scrapedate')
+    for row in brand_rows:
+        brands.append(dict(zip(keys, row)))
+
+    #brands.sort(key = lambda i: i['brand'])
+
+    return render_template("brand.html", brands=brands, categories=categories)
