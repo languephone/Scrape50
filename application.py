@@ -14,10 +14,13 @@ app.jinja_env.filters["gbp"] = gbp
 
 # Function to get distinct categories
 def get_category_list():
+    """Connect to SQL database and get list of unique categories."""
+
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT DISTINCT category FROM products""")
+    # Convert SQL output from tuples to list
     categories = [x[0] for x in cur.fetchall()]
     db.close()
     return categories
@@ -85,6 +88,7 @@ def admin():
     categories = get_category_list()
     lf = LookFantastic()
     lf.get_all_brands()
+    lf.write_brands_to_sql()
 
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
