@@ -267,3 +267,42 @@ class CultBeauty(Scraper):
 
                 self.brand_data.append(name)
         print(self.brand_data)
+
+
+class Asos(Scraper):
+    "A class to scrape from the ASOS website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "ASOS"
+        self.base_link = "https://www.asos.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        # TODO find replacement for hard coding category links
+        self.categories = {
+            'foundation': "",
+            'mascara': ""
+            }
+        self.brand_page = "women/face-body/a-to-z-of-brands/cat/?cid=2373"
+        self.product_data = []
+        self.brand_data = []
+
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to sort by top sales rank
+        link_modified = self.base_link + self.brand_page
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        brand_sections = soup.find_all('li', {"class": "vqk6pTa"})
+        for section in brand_sections:
+
+            try:
+                name = section.a.string.replace('\n', "")
+            except:
+                pass
+
+            self.brand_data.append(name)
