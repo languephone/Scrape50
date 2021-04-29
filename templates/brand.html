@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 
 {% block main %}
+        <div class="container p-5">
+            <div class="section">
+                <form action="/brand" method="post">
+                    <div class="form-group">
+                        <input autocomplete="off" autofocus class="form-control" name="brand" placeholder="Brand Name" type="search">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Get Brand Distribution</button>
+                </form>
+            </div>
+        </div>
         <div class="container">
             <table class="table">
                 <thead>

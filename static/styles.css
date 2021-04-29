@@ -35,3 +35,16 @@
 .navbar-custom {
     background-color: #0086BE;
 }
+
+.section {
+    margin-bottom: 20px;
+}
+
+main .form-control
+{
+    /* Center form controls */
+    display: inline-block;
+
+    /* Override Bootstrap's 100% width for form controls */
+    width: auto;
+}

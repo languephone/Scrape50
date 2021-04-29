@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import csv
 import sqlite3
 from scrapers import LookFantastic, HouseOfFraser
@@ -57,29 +57,32 @@ def category(category):
     return render_template("category.html", category=category, products=products, brands=brands, categories=categories)
 
 
-@app.route("/brands")
+@app.route("/brands", methods=["GET", "POST"])
 def brands():
 
-    # Create a database connection to a SQLite database
-    db = sqlite3.connect('products.db')
-    cur = db.cursor()
-    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
-    brand_rows = cur.fetchall()
-    cur.execute("""SELECT DISTINCT category FROM products""")
-    categories = [x[0] for x in cur.fetchall()]
-    db.close()
+    if request.method == "GET":
+       return render_template("brand.html")
+    else:
+        # Create a database connection to a SQLite database
+        db = sqlite3.connect('products.db')
+        cur = db.cursor()
+        cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands) AND brand=?""", ("Clinique"))
+        brand_rows = cur.fetchall()
+        cur.execute("""SELECT DISTINCT category FROM products""")
+        categories = [x[0] for x in cur.fetchall()]
+        db.close()
 
-    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
+        # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
 
-    # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
-    for row in brand_rows:
-        brands.append(dict(zip(keys, row)))
+        # Convert SQL response from list of tuples to list of dictionaries
+        brands = []
+        keys = ('brand', 'site', 'scrapedate')
+        for row in brand_rows:
+            brands.append(dict(zip(keys, row)))
 
-    #brands.sort(key = lambda i: i['brand'])
+        #brands.sort(key = lambda i: i['brand'])
 
-    return render_template("brand.html", brands=brands, categories=categories)
+        return render_template("brand.html", brands=brands, categories=categories)
 
 
 @app.route("/admin")
