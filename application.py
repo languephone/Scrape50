@@ -63,10 +63,12 @@ def brands():
     if request.method == "GET":
        return render_template("brand.html")
     else:
+        brand = request.form.get("brand")
+        print(brand)
         # Create a database connection to a SQLite database
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands) AND brand=?""", ("Clinique"))
+        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands WHERE brand=? GROUP BY site, brand ORDER BY brand ASC""", (brand,))
         brand_rows = cur.fetchall()
         cur.execute("""SELECT DISTINCT category FROM products""")
         categories = [x[0] for x in cur.fetchall()]
