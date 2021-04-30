@@ -61,7 +61,8 @@ def category(category):
 def brands():
 
     if request.method == "GET":
-       return render_template("brand.html")
+        categories = get_category_list()
+        return render_template("brand.html", categories=categories)
     else:
         brand = request.form.get("brand")
         print(brand)
