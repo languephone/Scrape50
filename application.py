@@ -69,7 +69,7 @@ def brands():
         # Create a database connection to a SQLite database
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands WHERE brand=? GROUP BY site, brand ORDER BY brand ASC""", (brand,))
+        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands WHERE lower(brand)=? GROUP BY site, brand ORDER BY brand ASC""", (brand.lower(),))
         brand_rows = cur.fetchall()
         cur.execute("""SELECT DISTINCT category FROM products""")
         categories = [x[0] for x in cur.fetchall()]
