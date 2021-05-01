@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block main %}
+            {% for site in sites_brands %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ site['site'] }}</h5>
+                    <p class="card-text">Press button to activate scrape</p>
+                    <form action="/admin" method="post">
+                        <input class="btn btn-primary" type="submit" value="Refresh" name="{{ site['site'] }}">
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    <p>last updated: {{ site['scrapedate'] }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Product Scrapers</h5>
+                    <p class="card-text">Press button to activate scrape</p>
+                    {% for site in sites_products %}
+                    <a href="#" class="btn btn-primary">{{ site }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endblock %}

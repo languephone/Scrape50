@@ -88,29 +88,24 @@ def brands():
         return render_template("brand.html", brands=brands, categories=categories)
 
 
-@app.route("/admin")
+@app.route("/admin", methods=["GET", "POST"])
 def admin():
 
     categories = get_category_list()
-    lf = LookFantastic()
-    lf.get_all_brands()
-    lf.write_brands_to_sql()
 
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
+    cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")
     brand_rows = cur.fetchall()
+    cur.execute("""SELECT DISTINCT site_id FROM products""")
+    sites_products = [x[0] for x in cur.fetchall()]
     db.close()
 
-    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
-
     # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
+    sites_brands = []
+    keys = ('site', 'scrapedate')
     for row in brand_rows:
-        brands.append(dict(zip(keys, row)))
+        sites_brands.append(dict(zip(keys, row)))
 
-    #brands.sort(key = lambda i: i['brand'])
-
-    return render_template("brand.html", brands=brands, categories=categories)
+    return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
