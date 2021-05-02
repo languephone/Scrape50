@@ -73,8 +73,7 @@ def brands():
             WHERE lower(brand)=? GROUP BY site, brand
             ORDER BY brand ASC""", (brand.lower(),))
         brand_rows = cur.fetchall()
-        cur.execute("""SELECT DISTINCT category FROM products""")
-        categories = [x[0] for x in cur.fetchall()]
+        categories = get_category_list()
         db.close()
 
         # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
