@@ -266,7 +266,6 @@ class CultBeauty(Scraper):
                     pass
 
                 self.brand_data.append(name)
-        print(self.brand_data)
 
 
 class Asos(Scraper):
@@ -306,3 +305,4 @@ class Asos(Scraper):
                 pass
 
             self.brand_data.append(name)
+            print(self.brand_data)
