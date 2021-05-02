@@ -115,16 +115,14 @@ def admin():
             asos = Asos()
             asos.get_all_brands()
             asos.write_brands_to_sql()
-            print("Updating ASOS")
         if request.form.get("Cult Beauty"):
             cb = CultBeauty()
             cb.get_all_brands()
             cb.write_brands_to_sql()
-            print("Updating Cult Beauty")
         if request.form.get("Look Fantastic"):
-            pass
-            # lf = LookFantastic()
-            # lf.get_all_brands()
+            lf = LookFantastic()
+            lf.get_all_brands()
+            lf.write_brands_to_sql()
 
         return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
     else:
