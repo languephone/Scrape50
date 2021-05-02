@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import csv
 import sqlite3
-from scrapers import LookFantastic, HouseOfFraser
+from scrapers import LookFantastic, HouseOfFraser, Asos, CultBeauty
 
 app = Flask(__name__)
 
@@ -65,11 +65,13 @@ def brands():
         return render_template("brand.html", categories=categories)
     else:
         brand = request.form.get("brand")
-        print(brand)
+
         # Create a database connection to a SQLite database
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands WHERE lower(brand)=? GROUP BY site, brand ORDER BY brand ASC""", (brand.lower(),))
+        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands
+            WHERE lower(brand)=? GROUP BY site, brand
+            ORDER BY brand ASC""", (brand.lower(),))
         brand_rows = cur.fetchall()
         cur.execute("""SELECT DISTINCT category FROM products""")
         categories = [x[0] for x in cur.fetchall()]
@@ -108,4 +110,22 @@ def admin():
     for row in brand_rows:
         sites_brands.append(dict(zip(keys, row)))
 
-    return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+    if request.method == "POST":
+        if request.form.get("ASOS"):
+            asos = Asos()
+            asos.get_all_brands()
+            asos.write_brands_to_sql()
+            print("Updating ASOS")
+        if request.form.get("Cult Beauty"):
+            cb = CultBeauty()
+            cb.get_all_brands()
+            cb.write_brands_to_sql()
+            print("Updating Cult Beauty")
+        if request.form.get("Look Fantastic"):
+            pass
+            # lf = LookFantastic()
+            # lf.get_all_brands()
+
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+    else:
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
