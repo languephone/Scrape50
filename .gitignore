@@ -1,4 +1,7 @@
 scraper.py
 test.py
+.DS_Store
 *.db
 *.csv
+/__pycache__
+/scrape50_env
