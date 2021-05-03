@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import csv
 import sqlite3
-from scrapers import LookFantastic, HouseOfFraser
+from scrapers import LookFantastic, HouseOfFraser, Asos, CultBeauty
 
 app = Flask(__name__)
 
@@ -42,8 +42,7 @@ def category(category):
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
-    cur.execute("""SELECT DISTINCT category FROM products""")
-    categories = [x[0] for x in cur.fetchall()]
+    categories = get_category_list()
     db.close()
 
     # Convert SQL response from list of tuples to list of dictionaries
@@ -65,7 +64,7 @@ def brands():
         return render_template("brand.html", categories=categories)
     else:
         brand = request.form.get("brand")
-        print(brand)
+
         # Create a database connection to a SQLite database
         db = sqlite3.connect('products.db')
         cur = db.cursor()
@@ -73,8 +72,7 @@ def brands():
             WHERE lower(brand)=? GROUP BY site, brand
             ORDER BY brand ASC""", (brand.lower(),))
         brand_rows = cur.fetchall()
-        cur.execute("""SELECT DISTINCT category FROM products""")
-        categories = [x[0] for x in cur.fetchall()]
+        categories = get_category_list()
         db.close()
 
         # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
@@ -90,29 +88,50 @@ def brands():
         return render_template("brand.html", brands=brands, categories=categories)
 
 
-@app.route("/admin")
+@app.route("/admin", methods=["GET", "POST"])
 def admin():
 
     categories = get_category_list()
-    lf = LookFantastic()
-    lf.get_all_brands()
-    lf.write_brands_to_sql()
 
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
+    cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")
     brand_rows = cur.fetchall()
+    cur.execute("""SELECT DISTINCT site_id FROM products""")
+    sites_products = [x[0] for x in cur.fetchall()]
     db.close()
 
-    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
-
     # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
+    sites_brands = []
+    keys = ('site', 'scrapedate')
     for row in brand_rows:
-        brands.append(dict(zip(keys, row)))
+        sites_brands.append(dict(zip(keys, row)))
 
-    #brands.sort(key = lambda i: i['brand'])
+    if request.method == "POST":
+        if request.form.get("ASOS") == "brands":
+            asos = Asos()
+            asos.get_all_brands()
+            asos.write_brands_to_sql()
+        if request.form.get("Cult Beauty") == "brands":
+            cb = CultBeauty()
+            cb.get_all_brands()
+            cb.write_brands_to_sql()
+        if request.form.get("Look Fantastic") == "brands":
+            lf = LookFantastic()
+            lf.get_all_brands()
+            lf.write_brands_to_sql()
+        if request.form.get("Look Fantastic") == "products":
+            lf = LookFantastic()
+            lf.loop_through_categories()
+            lf.clean_all_products()
+            lf.write_products_to_sql()
+        if request.form.get("House of Fraser") == "products":
+            hof = HouseOfFraser()
+            hof.loop_through_categories()
+            hof.clean_all_products()
+            hof.write_products_to_sql()
 
-    return render_template("brand.html", brands=brands, categories=categories)
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+    else:
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
