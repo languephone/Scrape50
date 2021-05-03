@@ -3,9 +3,9 @@
 {% block main %}
         <div class="container p-5">
             <div class="section">
-                <form action="/brands" method="post">
+                <form action="/brands" method="get">
                     <div class="form-group">
-                        <input autocomplete="off" autofocus class="form-control" name="brand" placeholder="Brand Name" type="text">
+                        <input autocomplete="off" autofocus class="form-control" name="q" placeholder="Brand Name" type="text">
                     </div>
                     <button class="btn btn-primary" type="submit">Get Brand Distribution</button>
                 </form>

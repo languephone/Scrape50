@@ -56,36 +56,36 @@ def category(category):
     return render_template("category.html", category=category, products=products, brands=brands, categories=categories)
 
 
-@app.route("/brands", methods=["GET", "POST"])
+@app.route("/brands")
 def brands():
 
-    if request.method == "GET":
-        categories = get_category_list()
-        return render_template("brand.html", categories=categories)
-    else:
-        brand = request.form.get("brand")
+    categories = get_category_list()
+    brand = request.args.get("q")
 
-        # Create a database connection to a SQLite database
-        db = sqlite3.connect('products.db')
-        cur = db.cursor()
-        cur.execute("""SELECT brand, site, MIN(scrapedate) FROM brands
-            WHERE lower(brand)=? GROUP BY site, brand
-            ORDER BY brand ASC""", (brand.lower(),))
-        brand_rows = cur.fetchall()
-        categories = get_category_list()
-        db.close()
+    if brand == None:
+        brand = ""
 
-        # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    cur = db.cursor()
+    cur.execute("""SELECT brand, site, MIN(scrapedate) FROM brands
+        WHERE lower(brand) LIKE ? GROUP BY site, brand
+        ORDER BY brand ASC""", ("%" + brand.lower() + "%",))
+    brand_rows = cur.fetchall()
+    categories = get_category_list()
+    db.close()
 
-        # Convert SQL response from list of tuples to list of dictionaries
-        brands = []
-        keys = ('brand', 'site', 'scrapedate')
-        for row in brand_rows:
-            brands.append(dict(zip(keys, row)))
+    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
 
-        #brands.sort(key = lambda i: i['brand'])
+    # Convert SQL response from list of tuples to list of dictionaries
+    brands = []
+    keys = ('brand', 'site', 'scrapedate')
+    for row in brand_rows:
+        brands.append(dict(zip(keys, row)))
 
-        return render_template("brand.html", brands=brands, categories=categories)
+    #brands.sort(key = lambda i: i['brand'])
+
+    return render_template("brand.html", brands=brands, categories=categories)
 
 
 @app.route("/admin", methods=["GET", "POST"])
@@ -132,6 +132,4 @@ def admin():
             hof.clean_all_products()
             hof.write_products_to_sql()
 
-        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
-    else:
-        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+    return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
