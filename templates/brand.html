@@ -2,14 +2,7 @@
 
 {% block main %}
         <div class="container p-5">
-            <div class="section">
-                <form action="/brands" method="post">
-                    <div class="form-group">
-                        <input autocomplete="off" autofocus class="form-control" name="brand" placeholder="Brand Name" type="text">
-                    </div>
-                    <button class="btn btn-primary" type="submit">Get Brand Distribution</button>
-                </form>
-            </div>
+            <input autocomplete="off" autofocus class="form-control" name="q" placeholder="Search Brand Name" type="text">
         </div>
         <div class="container">
             <table class="table">
@@ -21,14 +14,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for brand in brands %}
-                    <tr>
-                        <td>{{ brand['brand'] }}</td>
-                        <td>{{ brand['site'] }}</td>
-                        <td>{{ brand['scrapedate'] }}</td>
-                    </tr>
-                {% endfor %}
+                    <!-- Filled in via AJAX request in javascript below -->
                 </tbody>
             </table>
         </div>
+        
+        <!-- JQuery -->
+        <script   src="https://code.jquery.com/jquery-3.6.0.min.js"   integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="   crossorigin="anonymous"></script>
+
+        <!-- JQuery AJAX request -->
+        <script>
+            let input = document.querySelector('input');
+            input.addEventListener('keyup', function() {
+                $.get('/search?q=' + input.value, function(brands) {
+                    let html = '';
+                    for (let item in brands)
+                    {
+                        let brand = brands[item].brand;
+                        let scrapedate = brands[item].scrapedate;
+                        let site = brands[item].site;
+                        html += '<tr>'
+                            + '<td>' + brand + '</td>'
+                            + '<td>' + scrapedate + '</td>'
+                            + '<td>' + site + '</td>'
+                            + '</tr>'
+                    }
+                    document.querySelector('tbody').innerHTML = html;
+                });
+            });
+        </script>
 {% endblock %}
