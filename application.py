@@ -42,8 +42,7 @@ def category(category):
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
-    cur.execute("""SELECT DISTINCT category FROM products""")
-    categories = [x[0] for x in cur.fetchall()]
+    categories = get_category_list()
     db.close()
 
     # Convert SQL response from list of tuples to list of dictionaries
@@ -69,7 +68,7 @@ def brands():
         # Create a database connection to a SQLite database
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand, site, MAX(scrapedate) FROM brands
+        cur.execute("""SELECT brand, site, MIN(scrapedate) FROM brands
             WHERE lower(brand)=? GROUP BY site, brand
             ORDER BY brand ASC""", (brand.lower(),))
         brand_rows = cur.fetchall()
