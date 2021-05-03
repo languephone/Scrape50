@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import csv
 import sqlite3
 from scrapers import LookFantastic, HouseOfFraser, Asos, CultBeauty
@@ -60,32 +60,8 @@ def category(category):
 def brands():
 
     categories = get_category_list()
-    brand = request.args.get("q")
 
-    if brand == None:
-        brand = ""
-
-    # Create a database connection to a SQLite database
-    db = sqlite3.connect('products.db')
-    cur = db.cursor()
-    cur.execute("""SELECT brand, site, MIN(scrapedate) FROM brands
-        WHERE lower(brand) LIKE ? GROUP BY site, brand
-        ORDER BY brand ASC""", ("%" + brand.lower() + "%",))
-    brand_rows = cur.fetchall()
-    categories = get_category_list()
-    db.close()
-
-    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
-
-    # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
-    for row in brand_rows:
-        brands.append(dict(zip(keys, row)))
-
-    #brands.sort(key = lambda i: i['brand'])
-
-    return render_template("brand.html", brands=brands, categories=categories)
+    return render_template("brand.html", categories=categories)
 
 
 @app.route("/admin", methods=["GET", "POST"])
@@ -133,3 +109,31 @@ def admin():
             hof.write_products_to_sql()
 
     return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+
+@app.route("/search")
+def search():
+
+    brand = request.args.get("q")
+    if brand == None:
+        brand = ""
+
+    # Create a database connection to a SQLite database
+    db = sqlite3.connect('products.db')
+    cur = db.cursor()
+    cur.execute("""SELECT brand, site, MIN(scrapedate) FROM brands
+        WHERE lower(brand) LIKE ? GROUP BY site, brand
+        ORDER BY brand ASC""", ("%" + brand.lower() + "%",))
+    brand_rows = cur.fetchall()
+    db.close()
+
+    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
+
+    # Convert SQL response from list of tuples to list of dictionaries
+    brands = []
+    keys = ('brand', 'site', 'scrapedate')
+    for row in brand_rows:
+        brands.append(dict(zip(keys, row)))
+
+    #brands.sort(key = lambda i: i['brand'])
+
+    return jsonify(brands)
