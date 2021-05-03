@@ -113,23 +113,17 @@ class LookFantastic(Scraper):
         product_list = soup.find_all('li', {"class": "productListProducts_product"})
 
         for product in product_list:
-
-
             product_data = product.find('span', {"class": "js-enhanced-ecommerce-data"})
 
             try:
                 name = product_data.get('data-product-title').replace('\n', "")
             except:
                 name = None
-            
+
             try:
-                # Check for RRP field, which will appear only on discounted products
-                price = product.find('span', {"class": "productBlock_rrpValue"}).text.replace('\n', "").replace("£", "")
+                price = product_data.get('data-product-price').replace('\n', "").replace("£", "")
             except:
-                try:
-                    price = product_data.get('data-product-price').replace('\n', "").replace("£", "")
-                except:
-                    price = None
+                price = None
 
             try:
                 brand = product_data.get('data-product-brand').replace('\n', "")
@@ -272,6 +266,7 @@ class CultBeauty(Scraper):
                     pass
 
                 self.brand_data.append(name)
+        print(self.brand_data)
 
 
 class Asos(Scraper):
@@ -311,4 +306,3 @@ class Asos(Scraper):
                 pass
 
             self.brand_data.append(name)
-            print(self.brand_data)
