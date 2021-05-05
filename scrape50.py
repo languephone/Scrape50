@@ -1,4 +1,4 @@
-from scrapers import LookFantastic, HouseOfFraser, CultBeauty
+from scrapers import LookFantastic, HouseOfFraser, CultBeauty, BeautyBay
 
 # create instances of each class and run methods to scrape products
 # lf = LookFantastic()
@@ -13,5 +13,5 @@ from scrapers import LookFantastic, HouseOfFraser, CultBeauty
 # hof.clean_all_products()
 # hof.write_to_csv()
 
-cb = CultBeauty()
-cb.get_all_brands()
+bb = BeautyBay()
+bb.get_all_brands()
