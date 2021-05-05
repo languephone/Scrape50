@@ -35,7 +35,7 @@ def index():
 @app.route("/<string:category>")
 def category(category):
 
-    # Create a database connection to a SQLite database
+    # Get categories & brands from SQL
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT * FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
@@ -71,7 +71,7 @@ def admin():
     lf.get_all_brands()
     lf.write_brands_to_sql()
 
-    # Create a database connection to a SQLite database
+    # Get categories & brands from SQL
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")

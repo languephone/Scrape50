@@ -153,7 +153,7 @@ class LookFantastic(Scraper):
     def get_all_brands(self):
         """Scrape list of brands from A-Z brand section of site."""
 
-        # Modify link to sort by top sales rank
+        # Modify link to add on brands section
         link_modified = self.base_link + self.brand_page
 
         page = requests.get(link_modified, headers=self.headers).text
@@ -255,7 +255,7 @@ class CultBeauty(Scraper):
     def get_all_brands(self):
         """Scrape list of brands from A-Z brand section of site."""
 
-        # Modify link to sort by top sales rank
+        # Modify link to add on brands section
         link_modified = self.base_link + self.brand_page
 
         page = requests.get(link_modified).text
@@ -311,3 +311,46 @@ class Asos(Scraper):
                 pass
 
             self.brand_data.append(name)
+
+
+class BeautyBay(Scraper):
+    "A class to scrape from the Beauty Bay website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "Beauty Bay"
+        self.base_link = "https://www.beautybay.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15'}
+        # TODO find replacement for hard coding category links
+        self.categories = {
+            'foundation': "",
+            'mascara': ""
+            }
+        self.brand_page = "l/antipodes/"
+        self.product_data = []
+        self.brand_data = []
+
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        page = requests.get(link_modified, headers=self.headers).text
+        print(page)
+        soup = BeautifulSoup(page, 'html.parser')
+        brand_sections = soup.find_all('div', {"class": "brand-section-items"})
+        print(brand_sections)
+
+        for brand in brand_sections:
+            try:
+                name = brand.a.replace('\n', "")
+                print(f"trying {brand.a}")
+            except:
+                pass
+
+            self.brand_data.append(name)
+            print(name)
