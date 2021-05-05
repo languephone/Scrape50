@@ -1,4 +1,5 @@
 scraper.py
+scrape50.py
 test.py
 .DS_Store
 *.db
