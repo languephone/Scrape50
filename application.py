@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import csv
 import sqlite3
-from scrapers import LookFantastic, HouseOfFraser
+from scrapers import LookFantastic, HouseOfFraser, Asos, CultBeauty
 
 app = Flask(__name__)
 
@@ -42,8 +42,7 @@ def category(category):
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
-    cur.execute("""SELECT DISTINCT category FROM products""")
-    categories = [x[0] for x in cur.fetchall()]
+    categories = get_category_list()
     db.close()
 
     # Convert SQL response from list of tuples to list of dictionaries
@@ -64,7 +63,7 @@ def brands():
     return render_template("brand.html", categories=categories)
 
 
-@app.route("/admin")
+@app.route("/admin", methods=["GET", "POST"])
 def admin():
 
     categories = get_category_list()
@@ -75,15 +74,17 @@ def admin():
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT brand, site, scrapedate FROM brands WHERE scrapedate=(SELECT MAX(scrapedate) FROM brands)""")
+    cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")
     brand_rows = cur.fetchall()
+    cur.execute("""SELECT DISTINCT site_id FROM products""")
+    sites_products = [x[0] for x in cur.fetchall()]
     db.close()
 
     # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
 
     # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
+    sites_brands = []
+    keys = ('site', 'scrapedate')
     for row in brand_rows:
         sites_brands.append(dict(zip(keys, row)))
 
@@ -111,7 +112,10 @@ def admin():
             hof.clean_all_products()
             hof.write_products_to_sql()
 
-    return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
+    else:
+        return render_template("admin.html", categories=categories, sites_brands=sites_brands, sites_products=sites_products)
 
 @app.route("/search")
 def search():
