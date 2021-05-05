@@ -8,9 +8,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">site</th>
-                        <th scope="col">brand</th>
-                        <th scope="col">date</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Site</th>
+                        <th scope="col">Earliest Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,12 +31,13 @@
                     for (let item in brands)
                     {
                         let brand = brands[item].brand;
-                        let scrapedate = brands[item].scrapedate;
                         let site = brands[item].site;
+                        let scrapedate = brands[item].scrapedate;
+
                         html += '<tr>'
                             + '<td>' + brand + '</td>'
-                            + '<td>' + scrapedate + '</td>'
                             + '<td>' + site + '</td>'
+                            + '<td>' + scrapedate + '</td>'
                             + '</tr>'
                     }
                     document.querySelector('tbody').innerHTML = html;
