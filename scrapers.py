@@ -313,22 +313,22 @@ class Asos(Scraper):
             self.brand_data.append(name)
 
 
-class BeautyBay(Scraper):
+class NextFabled(Scraper):
     "A class to scrape from the Beauty Bay website."
 
     def __init__(self):
         """Initialize attributes of the parent class."""
         super().__init__()
-        self.site = "Beauty Bay"
-        self.base_link = "https://www.beautybay.com/"
+        self.site = "Next"
+        self.base_link = "https://www.next.co.uk/"
         self.sorting_modifier = ""
-        self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15'}
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
         # TODO find replacement for hard coding category links
         self.categories = {
             'foundation': "",
             'mascara': ""
             }
-        self.brand_page = "l/antipodes/"
+        self.brand_page = "brands/beauty"
         self.product_data = []
         self.brand_data = []
 
@@ -340,17 +340,52 @@ class BeautyBay(Scraper):
         link_modified = self.base_link + self.brand_page
 
         page = requests.get(link_modified, headers=self.headers).text
-        print(page)
         soup = BeautifulSoup(page, 'html.parser')
-        brand_sections = soup.find_all('div', {"class": "brand-section-items"})
-        print(brand_sections)
+        brand_sections = soup.find_all('div', {"class": "col-md-3 bp-brand-name"})
 
         for brand in brand_sections:
             try:
-                name = brand.a.replace('\n', "")
-                print(f"trying {brand.a}")
+                name = brand.a.string.replace('\n', "")
             except:
                 pass
 
             self.brand_data.append(name)
-            print(name)
+
+
+class Boots(Scraper):
+    "A class to scrape from the Boots website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "Next"
+        self.base_link = "https://www.boots.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        # TODO find replacement for hard coding category links
+        self.categories = {
+            'foundation': "",
+            'mascara': ""
+            }
+        self.brand_page = "beauty/all-beauty-and-skincare-brands"
+        self.product_data = []
+        self.brand_data = []
+
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        brand_sections = soup.find_all('div', {"id": "brand-lists"})
+
+        for brand in brand_sections:
+            try:
+                name = brand.a.string.replace('\n', "")
+            except:
+                pass
+
+            self.brand_data.append(name)

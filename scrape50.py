@@ -1,4 +1,4 @@
-from scrapers import LookFantastic, HouseOfFraser, CultBeauty, BeautyBay
+from scrapers import LookFantastic, HouseOfFraser, CultBeauty, NextFabled, Boots
 
 # create instances of each class and run methods to scrape products
 # lf = LookFantastic()
@@ -13,5 +13,7 @@ from scrapers import LookFantastic, HouseOfFraser, CultBeauty, BeautyBay
 # hof.clean_all_products()
 # hof.write_to_csv()
 
-bb = BeautyBay()
-bb.get_all_brands()
+boots = Boots()
+boots.get_all_brands()
+boots.write_brands_to_sql()
+boots.write_to_csv(boots.brand_data)
