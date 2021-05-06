@@ -358,7 +358,7 @@ class Boots(Scraper):
     def __init__(self):
         """Initialize attributes of the parent class."""
         super().__init__()
-        self.site = "Next"
+        self.site = "Boots"
         self.base_link = "https://www.boots.com/"
         self.sorting_modifier = ""
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
@@ -380,11 +380,12 @@ class Boots(Scraper):
 
         page = requests.get(link_modified, headers=self.headers).text
         soup = BeautifulSoup(page, 'html.parser')
-        brand_sections = soup.find_all('div', {"id": "brand-lists"})
-
-        for brand in brand_sections:
+        brand_section = soup.find('div', {"id": "brand-lists"})
+        brands = brand_section.find_all('a')
+        
+        for brand in brands:
             try:
-                name = brand.a.string.replace('\n', "")
+                name = brand.string.replace('\n', "")
             except:
                 pass
 
