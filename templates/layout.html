@@ -1,3 +1,5 @@
+{% set active_page = active_page %}
+
 <!DOCTYPE html>
 <html lang = "en">
     <head>
@@ -24,13 +26,16 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Home</a>
+                            <!-- includes jinja syntax to make nav-link active -->
+                            <a class="nav-link{% if active_page == 'home' %} active{% endif %}" aria-current="page" href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/brands">Brands</a>
+                            <!--  includes jinja syntax to make nav-link active -->
+                            <a class="nav-link {% if active_page == 'brands' %} active{% endif %}" href="/brands">Brands</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <!-- includes jinja syntax to make nav-link active -->
+                            <a class="nav-link dropdown-toggle{% if active_page == 'categories' %} active{% endif %}" href="/" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Categories
                             </a>
                              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -41,7 +46,8 @@
                               </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/admin" tabindex="-1" aria-disabled="false">Admin</a>
+                            <!-- includes jinja syntax to make nav-link active -->
+                            <a class="nav-link{% if active_page == 'admin' %} active{% endif %}" href="/admin" tabindex="-1" aria-disabled="false">Admin</a>
                         </li>
                       </ul>
             </div>
