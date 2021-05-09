@@ -23,7 +23,7 @@ class Scraper:
         """Remove brand, colour and/or shade information from product name"""
 
         # Remove brand name from product name if exists:
-        product_name = product_name.replace(brand, "").strip()
+        #product_name = product_name.replace(brand, "").strip()
 
         replacements = ['- Black', '(Various Shades)', '01']
         for replacement in replacements:
