@@ -12,7 +12,12 @@
                         <form action="/admin" method="POST">
                             {% for site in sites_brands %}
                             <div class="form-check">
-                                <label class="form-check-label" for="{{ site['site'] }}">{{ site['site'] }}</label>
+                                <label class="form-check-label" for="{{ site['site'] }}">
+                                    {{ site['site'] }}
+                                    <span class="badge bg-secondary">
+                                        <i>{{ site['scrapedate'] }}</i>
+                                    </span>
+                                </label>
                                 <input class="form-check-input" type="checkbox" id="{{ site['site'] }}" name="brands" value="{{ site['site'] }}">
                             </div>
                             {% endfor %}
@@ -32,7 +37,7 @@
                             {% for site in sites_products %}
                             <div class="form-check">
                                 <label class="form-check-label" for="{{ site }}">{{ site }}</label>
-                                <input class="form-check-input" type="checkbox" id="{{ site }}" name="{{ site }}" value="products">
+                                <input class="form-check-input" type="checkbox" id="{{ site }}" name="products" value="{{ site }}">
                             </div>
                             {% endfor %}
                             <button type="submit" class="btn btn-primary">Submit</button>
