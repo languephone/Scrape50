@@ -313,7 +313,7 @@ class Asos(Scraper):
             self.brand_data.append(name)
 
 
-class NextFabled(Scraper):
+class Next(Scraper):
     "A class to scrape from the Beauty Bay website."
 
     def __init__(self):
