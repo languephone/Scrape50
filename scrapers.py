@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
-
+import re
 
 class Scraper:
     """A class to create a template for sites to be scraped."""
@@ -17,17 +17,20 @@ class Scraper:
 
     def clean_all_products(self):
         for product in self.product_data:
-            product['name'] = self._clean_product_name(product['name'], product['brand'])
+            product['clean_name'] = self._clean_product_name(product['name'], product['brand'])
 
     def _clean_product_name(self, product_name, brand):
-        """Remove brand, colour and/or shade information from product name"""
+        """Remove brand, colour and/or shade, size & SPF information from product name"""
 
         # Remove brand name from product name if exists:
         #product_name = product_name.replace(brand, "").strip()
 
-        replacements = ['- Black', '(Various Shades)', '01']
-        for replacement in replacements:
-            product_name = product_name.replace(replacement, "").strip()
+        product_name = re.split(r'( - |, )', product)[0]
+
+        patterns = [r"[0-9.]+ *(ml|oz|g)", r"\(Various Shades\)", r" SPF *\d+",
+            r" \d+ *SPF", r" [-–] *\d* Black *"]
+        for pattern in patterns:
+            product_name = re.sub(pattern, "", product_name).strip()
 
         return product_name
 
