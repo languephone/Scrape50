@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import sqlite3
 import re
+from fuzzywuzzy import fuzz, process
 
 class Scraper:
     """A class to create a template for sites to be scraped."""
@@ -17,22 +18,40 @@ class Scraper:
 
     def clean_all_products(self):
         for product in self.product_data:
-            product['clean_name'] = self._clean_product_name(product['name'], product['brand'])
+            product['clean_name'] = self._clean_product_name(product['name'])
 
-    def _clean_product_name(self, product_name, brand):
-        """Remove brand, colour and/or shade, size & SPF information from product name"""
+    def _clean_product_name(self, product_name):
+        """Remove colour and/or shade, size & SPF information from product name"""
 
-        # Remove brand name from product name if exists:
-        #product_name = product_name.replace(brand, "").strip()
-
+        # Split off shade name using regex split function
         product_name = re.split(r'( - |, )', product)[0]
 
+        # Define regex patterns to be used in substitutions
         patterns = [r"[0-9.]+ *(ml|oz|g)", r"\(Various Shades\)", r" SPF *\d+",
             r" \d+ *SPF", r" [-–] *\d* Black *"]
         for pattern in patterns:
             product_name = re.sub(pattern, "", product_name).strip()
 
         return product_name
+
+    def _filter_existing_brands(self, product_list):
+        """Exclude products where brand is already captured by Look Fantastic."""
+
+        # Get brand names from Look Fantastic
+        db = sqlite3.connect('products.db')
+        cur = db.cursor()
+        cur.execute("""SELECT brand FROM products
+            WHERE site_id='Look Fantastic'
+            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
+            GROUP BY brand""")
+        lf_brands = [x[0] for x in cur.fetchall()]
+        db.close()
+
+        # TODO: find way to remove items from list of products so they are not entered into database
+        # for product in product_list:
+        # match = process.extractOne(product['brand'], lf_brands, scorer=fuzz.partial_ratio)
+        # if match[1] >= 85:
+        #     print(name, match)
 
     def write_products_to_sql(self):
         """Take a list of dictionaries of scraped data, and write to a SQLite database"""
