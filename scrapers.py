@@ -43,6 +43,7 @@ class Scraper:
         cur.execute("""CREATE TABLE IF NOT EXISTS products(
             id integer PRIMARY KEY,
             name text NOT NULL,
+            name_clean text NOT NULL,
             brand text,
             price real,
             img_link text,
@@ -53,8 +54,8 @@ class Scraper:
 
        # Insert rows into database
         for row in self.product_data:
-            cur.execute("INSERT INTO products(name, brand, price, img_link, category, site_id) VALUES(?, ?, ?, ?, ?, ?)",
-                (row['name'], row['brand'], row['price'], row['image_link'], row['category'], row['site_id']))
+            cur.execute("INSERT INTO products(name, name_clean, brand, price, img_link, category, site_id) VALUES(?, ?, ?, ?, ?, ?)",
+                (row['name'], row['name_clean'], row['brand'], row['price'], row['image_link'], row['category'], row['site_id']))
         db.commit()
         db.close()
 
