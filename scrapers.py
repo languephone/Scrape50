@@ -18,13 +18,13 @@ class Scraper:
 
     def clean_all_products(self):
         for product in self.product_data:
-            product['clean_name'] = self._clean_product_name(product['name'])
+            product['name_clean'] = self._clean_product_name(product['name'])
 
     def _clean_product_name(self, product_name):
         """Remove colour and/or shade, size & SPF information from product name"""
 
         # Split off shade name using regex split function
-        product_name = re.split(r'( - |, )', product)[0]
+        product_name = re.split(r'( - |, )', product_name)[0]
 
         # Define regex patterns to be used in substitutions
         patterns = [r"[0-9.]+ *(ml|oz|g)", r"\(Various Shades\)", r" SPF *\d+",
@@ -34,24 +34,6 @@ class Scraper:
 
         return product_name
 
-    def _filter_existing_brands(self, product_list):
-        """Exclude products where brand is already captured by Look Fantastic."""
-
-        # Get brand names from Look Fantastic
-        db = sqlite3.connect('products.db')
-        cur = db.cursor()
-        cur.execute("""SELECT brand FROM products
-            WHERE site_id='Look Fantastic'
-            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
-            GROUP BY brand""")
-        lf_brands = [x[0] for x in cur.fetchall()]
-        db.close()
-
-        # TODO: find way to remove items from list of products so they are not entered into database
-        # for product in product_list:
-        # match = process.extractOne(product['brand'], lf_brands, scorer=fuzz.partial_ratio)
-        # if match[1] >= 85:
-        #     print(name, match)
 
     def write_products_to_sql(self):
         """Take a list of dictionaries of scraped data, and write to a SQLite database"""
@@ -73,7 +55,7 @@ class Scraper:
 
        # Insert rows into database
         for row in self.product_data:
-            cur.execute("INSERT INTO products(name, name_clean, brand, price, img_link, category, site_id) VALUES(?, ?, ?, ?, ?, ?)",
+            cur.execute("INSERT INTO products(name, name_clean, brand, price, img_link, category, site_id) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 (row['name'], row['name_clean'], row['brand'], row['price'], row['image_link'], row['category'], row['site_id']))
         db.commit()
         db.close()
@@ -208,6 +190,16 @@ class HouseOfFraser(Scraper):
             'mascara': "mascaras"
             }
         self.product_data = []
+       
+        # Get brand names from Look Fantastic
+        db = sqlite3.connect('products.db')
+        cur = db.cursor()
+        cur.execute("""SELECT brand FROM products
+            WHERE site_id='Look Fantastic'
+            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
+            GROUP BY brand""")
+        self.lf_brands = [x[0] for x in cur.fetchall()]
+        db.close()
 
     def get_top_products(self, category):
         """Scrape info from top products page of specified category link"""
@@ -252,7 +244,10 @@ class HouseOfFraser(Scraper):
                     image_link = None
 
             item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
-            self.product_data.append(item)
+            
+            # Only add in brands not already covered by Look Fantastic
+            if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
+                self.product_data.append(item)
 
 
 class CultBeauty(Scraper):
