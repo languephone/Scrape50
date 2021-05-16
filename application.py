@@ -38,7 +38,7 @@ def category(category):
     # Get categories & brands from SQL
     db = sqlite3.connect('products.db')
     cur = db.cursor()
-    cur.execute("""SELECT * FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
+    cur.execute("""SELECT name_clean, brand, price, img_link, site_id FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
@@ -47,7 +47,7 @@ def category(category):
 
     # Convert SQL response from list of tuples to list of dictionaries
     products = []
-    keys = ('id', 'name', 'brand', 'price', 'image_link', 'site_id')
+    keys = ('name_clean', 'brand', 'price', 'image_link', 'site_id')
     for row in product_rows:
         products.append(dict(zip(keys, row)))
 
