@@ -132,3 +132,9 @@ def search():
     #brands.sort(key = lambda i: i['brand'])
 
     return jsonify(brands)
+
+@app.route("/sidebar")
+def sidebar():
+
+    categories = get_category_list()
+    return render_template("sidebar.html", categories=categories)
