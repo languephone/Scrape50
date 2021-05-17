@@ -63,3 +63,21 @@ main .form-control
         width: 0px;
     }
 }
+
+.lorem-text {
+    margin-left: 5rem;
+    padding: 1rem;
+}
+
+.sidebar {
+    width: 5rem;
+    height: 100vh;
+    position: fixed;
+    background-color: #0086BE;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
