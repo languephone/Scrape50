@@ -42,6 +42,7 @@ def category(category):
     product_rows = cur.fetchall()
     cur.execute("""SELECT DISTINCT brand FROM products""")
     brands = [x[0] for x in cur.fetchall()]
+    brands.sort()
     categories = get_category_list()
     db.close()
 
