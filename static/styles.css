@@ -70,10 +70,37 @@ main .form-control
 }
 
 .sidebar {
-    width: 5rem;
+    width: 68px;
     height: 100vh;
     position: fixed;
     background-color: #0086BE;
+    transition: width 300ms ease;
+}
+
+.logo img {
+    transform: rotate(0deg);
+    transition: transform 300ms;
+    margin-left: 0px;
+}
+
+.sidebar-item {
+    visibility: hidden;
+    margin-left: 10px;
+    color: white;
+}
+
+.sidebar:hover {
+    width: 16rem;
+    overflow-y: auto;
+}
+
+.sidebar:hover .logo img {
+    transform: rotate(90deg);
+}
+
+.sidebar:hover .sidebar-item {
+    visibility: visible;
+    transition-delay: 200ms;
 }
 
 .sidebar-nav {
@@ -81,3 +108,4 @@ main .form-control
     padding: 0;
     margin: 0;
 }
+
