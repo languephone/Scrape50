@@ -23,7 +23,7 @@
         <div class="container">
             <div class="grid">
                 {% for product in products %}
-                    <div class="product-card">
+                    <div class="product-card" data-brand="{{ product['brand'] }}">
                         <img class="card-img" src="{{ product['image_link'] }}" alt="{{ product['name_clean'] }}"/>
                         <h5 class="card-text">{{ product['price'] | gbp }}</h5>
                         <p class="card-text">{{ product['name_clean'] }}</p>
