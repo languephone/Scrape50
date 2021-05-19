@@ -12,21 +12,21 @@ function hide_card(card)
 // 	});
 // });
 
-document.addEventListener("change", function(e) {
+document.addEventListener('change', function(e) {
 	const brand = e.target.name;
 	card_select(brand);
 });
 
 function card_select(brand) {
-	document.querySelectorAll(".product-card").forEach(function(card) {
-		console.log(card.style);
+	document.querySelectorAll('.product-card').forEach(function(card) {
 		if (card.dataset.brand == brand) {
-			// if (card.style.display == 'block') {
+
+			if (card.style.display !== 'none') {
 				card.style.display = 'none';
-			// }
-			// else if (card.style.display == 'none') {
-			// 	card.style.display = 'block';
-			// }
+			}
+			else if (card.style.display == 'none') {
+				card.style.display = 'block';
+			}
 		}
 	});
 };
