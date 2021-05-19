@@ -1,30 +1,21 @@
-function hide_card(card)
-{
-    card.style.display = 'none';
+function hide_card(card) {
+	card.style.display = 'none';
 }
-
-
-// document.addEventListener("DOMContentLoaded", function() {
-	
-// 	// Have each checkbox remove the corresponding cards
-// 	document.querySelectorAll("input[type='checkbox']").forEach(function(box) {
-// 		console.log(box.name, box.checked);
-// 	});
-// });
 
 document.addEventListener('change', function(e) {
 	const brand = e.target.name;
-	card_select(brand);
+	card_select(e.target, brand);
 });
 
-function card_select(brand) {
+function card_select(target, brand) {
+	// Have each brand checkbox remove the corresponding product cards
 	document.querySelectorAll('.product-card').forEach(function(card) {
 		if (card.dataset.brand == brand) {
 
-			if (card.style.display !== 'none') {
+			if (target.checked == false) {
 				card.style.display = 'none';
 			}
-			else if (card.style.display == 'none') {
+			else if (target.checked == true) {
 				card.style.display = 'block';
 			}
 		}
