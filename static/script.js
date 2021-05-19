@@ -2,11 +2,6 @@ function hide_card(card) {
 	card.style.display = 'none';
 }
 
-document.addEventListener('change', function(e) {
-	const brand = e.target.name;
-	card_select(e.target, brand);
-});
-
 function card_select(target, brand) {
 	// Have each brand checkbox remove the corresponding product cards
 	document.querySelectorAll('.product-card').forEach(function(card) {
@@ -22,6 +17,10 @@ function card_select(target, brand) {
 	});
 };
 
+document.addEventListener('change', function(e) {
+	const brand = e.target.name;
+	card_select(e.target, brand);
+});
 
 // let input = document.querySelector('input');
 // input.addEventListener('keyup', function() {
