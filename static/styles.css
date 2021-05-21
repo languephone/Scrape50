@@ -12,9 +12,18 @@
 .product-card {
     display: flex;
     flex-direction: column;
-    /*justify-content: center;*/
     align-items: center;
     font-size: 8pt;
+    margin-top: 30px;
+}
+
+.product-card button {
+    margin-top: auto;
+    padding: 0 4px 0 4px;
+}
+
+.card-text {
+    margin-bottom: 4px;
 }
 
 .logo-box {
@@ -108,4 +117,3 @@ main .form-control
     padding: 0;
     margin: 0;
 }
-
