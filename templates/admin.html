@@ -36,7 +36,12 @@
                         <form action="/admin" method="POST">
                             {% for site in sites_products %}
                             <div class="form-check">
-                                <label class="form-check-label" for="{{ site }}">{{ site }}</label>
+                                <label class="form-check-label" for="{{ site }}">
+                                {{ site }}
+                                <span class="badge bg-secondary">
+                                        <i>{{ site['scrapedate'] }}</i>
+                                    </span>
+                                </label>
                                 <input class="form-check-input" type="checkbox" id="{{ site }}" name="products" value="{{ site }}">
                             </div>
                             {% endfor %}
