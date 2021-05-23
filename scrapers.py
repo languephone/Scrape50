@@ -266,7 +266,7 @@ class HouseOfFraser(Scraper):
                 except:
                     image_link = None
 
-            item = {'category': category, 'name': brand + ' ' name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
+            item = {'category': category, 'name': brand + ' ' + name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
             
             # Only add in brands not already covered by Look Fantastic
             if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
