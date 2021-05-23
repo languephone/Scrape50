@@ -265,6 +265,107 @@ class HouseOfFraser(Scraper):
                 self.product_data.append(item)
 
 
+class JohnLewis(Scraper):
+    "A class to scrape from the John Lewis website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "John Lewis"
+        self.base_link = "https://www.johnlewis.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        # TODO find replacement for hard coding category links
+        self.categories = {
+            'foundation': '/browse/beauty/makeup/foundations/_/N-7nreZ1yzjnw0',
+            'mascara': 'browse/beauty/makeup/mascaras/_/N-7nreZ1yzjnvx',
+            'serum': 'serums',
+            'moisturisers': 'face-moisturisers',
+            'cleanser': 'cleansers',
+            'eye treatment': 'eye-treatments'
+            }
+        self.brand_page = "brands?deptId=a30"
+        self.product_data = []
+        self.brand_data = []
+       
+        # Get brand names from Look Fantastic
+        db = sqlite3.connect('products.db')
+        cur = db.cursor()
+        cur.execute("""SELECT brand FROM products
+            WHERE site_id='Look Fantastic'
+            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
+            GROUP BY brand""")
+        self.lf_brands = [x[0] for x in cur.fetchall()]
+        db.close()
+
+    def get_top_products(self, category):
+        """Scrape info from top products page of specified category link"""
+
+        # Modify link to sort by top sales rank
+        link_modified = self.base_link + self.categories[category] + self.sorting_modifier
+
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        product_grid = soup.find("ul",{"class":"s-productscontainer2"})
+        product_list = product_grid.find_all("li", recursive=False)
+
+        for product in product_list:
+
+            try:
+                name = product.get('li-name').replace('\n', "")
+            except:
+                name = None
+
+            try:
+                price = product.get('li-price').replace('\n', "").replace("£", "")
+            except:
+                price = None
+
+            try:
+                brand = product.get('li-brand').replace('\n', "")
+            except:
+                brand = None
+
+            try:
+                product_id = product.get('li-productid').replace('\n', "")
+            except:
+                product_id = None
+
+            try:
+                image_link = product.find('img').get('src').replace('\n', "")
+            except:
+                try:
+                    image_link = product.find('img').get('data-original').replace('\n', "")
+                except:
+                    image_link = None
+
+            item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
+            
+            # Only add in brands not already covered by Look Fantastic
+            if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
+                self.product_data.append(item)
+
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        brand_letters = soup.find_all('div', {"class": "brands__letter"})
+        for letter in brand_letters:
+            brand_groups = letter.find_all('a')
+            for brand in brand_groups:
+                try:
+                    name = brand.string.replace('\n', "")
+                except:
+                    pass
+
+                self.brand_data.append(name)
+
 class CultBeauty(Scraper):
     "A class to scrape from the Cult Beauty website."
 
