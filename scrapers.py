@@ -19,6 +19,7 @@ class Scraper:
     def clean_all_products(self):
         for product in self.product_data:
             product['name_clean'] = self._clean_product_name(product['name'])
+            product['brand'] = self._clean_brand_name(product['brand'])
 
     def _clean_product_name(self, product_name):
         """Remove colour and/or shade, size & SPF information from product name"""
@@ -33,6 +34,13 @@ class Scraper:
             product_name = re.sub(pattern, "", product_name).strip()
 
         return product_name
+
+    def _clean_brand_name(self, brand_name):
+        """Change lowercase brand names to Title Case."""
+
+        if brand_name.islower() == True:
+            brand_name = brand_name.title()
+        return brand_name
 
 
     def write_products_to_sql(self):
@@ -258,7 +266,7 @@ class HouseOfFraser(Scraper):
                 except:
                     image_link = None
 
-            item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
+            item = {'category': category, 'name': brand + name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
             
             # Only add in brands not already covered by Look Fantastic
             if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
