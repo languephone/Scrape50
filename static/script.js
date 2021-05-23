@@ -22,6 +22,18 @@ document.addEventListener('change', function(e) {
 	card_select(e.target, brand);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('input[name="Select-All"]').onclick = function() {
+		const checkboxes = document.querySelectorAll('input[class="brand"]');
+	    for (const checkbox of checkboxes) {
+	        if (checkbox.checked != this.checked) {
+	        	checkbox.click();
+	        };
+	        checkbox.checked = this.checked;
+	    }
+	};
+});
+
 // let input = document.querySelector('input');
 // input.addEventListener('keyup', function() {
 //     $.get('/search?q=' + input.value, function(brands) {

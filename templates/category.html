@@ -9,10 +9,18 @@
                     <a href="#" class="sidebar-link">
                     <img src="/static/favicon.png">
                     </a>
+                <li class="sidebar-item">
+                    <input type="checkbox" name="Select-All" value="Select All" checked>
+                    <label for="Select-All">Select All</label>
+                </li>
+                <li class="sidebar-item">
+                    <p></p>
+                </li>
                 {% for brand in brands %}
                 <li class="sidebar-item">
-                    <input type="checkbox" name="{{ brand }}" value="{{ brand }}" checked>
+                    <input type="checkbox" name="{{ brand }}" value="{{ brand }}" class="brand" checked>
                     <label for="{{ brand }}">{{ brand }}</label>
+                </li>
                 {% endfor %}
             </ul>
         </nav>
