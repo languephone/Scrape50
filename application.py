@@ -55,7 +55,7 @@ def category(category):
     # Get categories & brands from SQL
     cur.execute("""SELECT DISTINCT brand FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     brands = [x[0] for x in cur.fetchall()]
-    brands.sort()
+    brands.sort(key=str.lower)
     categories = get_category_list()
     db.close()
 
