@@ -94,13 +94,23 @@ class LookFantastic(Scraper):
         """Initialize attributes of the parent class."""
         super().__init__()
         self.site = "Look Fantastic"
-        self.base_link = "https://www.lookfantastic.com/"
+        self.base_link = "https://www.lookfantastic.com/health-beauty/"
         self.sorting_modifier = "?pageNumber=1&sortOrder=salesRank"
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
         # TODO find replacement for hard coding category links
         self.categories = {
-            'foundation': "health-beauty/make-up/complexion/foundation-makeup.list",
-            'mascara': "health-beauty/make-up/eyes/mascaras.list"
+            'foundation': "make-up/complexion/foundation-makeup.list",
+            'concealer': "make-up/complexion/concealers-colour-correctors.list",
+            'blush': "make-up/complexion/blushers.list",
+            'bronzer': "make-up/complexion/bronzers.list",
+            'primer': "make-up/eyes/primer-enhancer.list",
+            'lipstick': "make-up/lips/lipsticks.list",
+            'lip gloss': "make-up/lips/lip-glosses.list",
+            'mascara': "make-up/eyes/mascaras.list",
+            'eye shadow': "make-up/eyes/eye-shadows.list",
+            'eye brow': "make-up/brows.list",
+            'eye liner': "make-up/eyes/eyeliners.list",
+            'brushes': "make-up/brushes.list"
             }
         self.brand_page = "brands.list"
         self.product_data = []
@@ -186,8 +196,12 @@ class HouseOfFraser(Scraper):
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
         # TODO find replacement for hard coding category links
         self.categories = {
-            'foundation': "foundations",
-            'mascara': "mascaras"
+            'foundation': 'foundations',
+            'mascara': 'mascaras',
+            'serum': 'serums',
+            'moisturisers': 'face-moisturisers',
+            'cleanser': 'cleansers',
+            'eye treatment': 'eye-treatments'
             }
         self.product_data = []
        
