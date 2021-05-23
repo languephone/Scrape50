@@ -12,10 +12,9 @@ def gbp(value):
 # Custom filter
 app.jinja_env.filters["gbp"] = gbp
 
-# Function to get distinct categories
+
 def get_category_list():
     """Connect to SQL database and get list of unique categories."""
-
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
     cur = db.cursor()
@@ -24,6 +23,16 @@ def get_category_list():
     categories = [x[0] for x in cur.fetchall()]
     db.close()
     return categories
+
+
+def sql_to_dict(list_of_tuples, *keys):
+    """Convert SQL response from list of tuples to list of dictionaries"""
+    dicts = []
+    keys = (keys)
+    for row in list_of_tuples:
+        dicts.append(dict(zip(keys, row)))
+    return dicts
+
 
 @app.route("/")
 def index():
@@ -35,24 +44,20 @@ def index():
 @app.route("/<string:category>")
 def category(category):
 
-    # Get categories & brands from SQL
+    # Get products from SQL
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT name_clean, brand, price, img_link, site_id FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     product_rows = cur.fetchall()
+    products = sql_to_dict(product_rows, 'name_clean', 'brand', 'price', 'image_link', 'site_id')
+    products.sort(key = lambda i: float(i['price']))
+
+    # Get categories & brands from SQL
     cur.execute("""SELECT DISTINCT brand FROM products WHERE category=? AND scrapedate=(SELECT MAX(scrapedate) FROM products WHERE category=?)""", (category, category))
     brands = [x[0] for x in cur.fetchall()]
     brands.sort()
     categories = get_category_list()
     db.close()
-
-    # Convert SQL response from list of tuples to list of dictionaries
-    products = []
-    keys = ('name_clean', 'brand', 'price', 'image_link', 'site_id')
-    for row in product_rows:
-        products.append(dict(zip(keys, row)))
-
-    products.sort(key = lambda i: float(i['price']))
 
     return render_template("category.html", category=category, products=products, brands=brands, categories=categories)
 
@@ -61,6 +66,7 @@ def category(category):
 def brands():
 
     categories = get_category_list()
+    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
     return render_template("brand.html", categories=categories)
 
 
@@ -69,22 +75,15 @@ def admin():
 
     categories = get_category_list()
 
-    # Get categories & brands from SQL
+    # Get sites from product & brand tables from SQL
     db = sqlite3.connect('products.db')
     cur = db.cursor()
     cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")
     brand_rows = cur.fetchall()
+    sites_brands = sql_to_dict(brand_rows, 'site', 'scrapedate')
     cur.execute("""SELECT DISTINCT site_id FROM products""")
     sites_products = [x[0] for x in cur.fetchall()]
     db.close()
-
-    # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
-
-    # Convert SQL response from list of tuples to list of dictionaries
-    sites_brands = []
-    keys = ('site', 'scrapedate')
-    for row in brand_rows:
-        sites_brands.append(dict(zip(keys, row)))
 
     if request.method == "POST":
         # Run brand refresh methods for any site sent in brand form
@@ -120,16 +119,9 @@ def search():
         WHERE lower(brand) LIKE ? GROUP BY site, brand
         ORDER BY brand ASC""", ("%" + brand.lower() + "%",))
     brand_rows = cur.fetchall()
+    brands = sql_to_dict(brand_rows, 'brand', 'site', 'scrapedate')
     db.close()
 
     # TODO: filter brands by latest scrapedate, and pull first scrapedate for each brand
-
-    # Convert SQL response from list of tuples to list of dictionaries
-    brands = []
-    keys = ('brand', 'site', 'scrapedate')
-    for row in brand_rows:
-        brands.append(dict(zip(keys, row)))
-
-    #brands.sort(key = lambda i: i['brand'])
 
     return jsonify(brands)
