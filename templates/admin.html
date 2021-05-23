@@ -42,7 +42,7 @@
                                         <i>{{ site['scrapedate'] }}</i>
                                     </span>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="{{ site }}" name="products" value="{{ site }}">
+                                <input class="form-check-input" type="checkbox" id="{{ site['site_id'] }}" name="products" value="{{ site['site_id'] }}">
                             </div>
                             {% endfor %}
                             <button type="submit" class="btn btn-primary">Submit</button>
