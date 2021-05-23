@@ -50,6 +50,7 @@ class Scraper:
             img_link text,
             category text NOT NULL,
             site_id text,
+            name_clean text DEFAULT name NOT NULL,
             scrapedate datetime NOT NULL DEFAULT CURRENT_DATE);""")
         db.commit()
 
