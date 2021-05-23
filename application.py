@@ -81,8 +81,9 @@ def admin():
     cur.execute("""SELECT site, MAX(scrapedate) FROM brands GROUP BY site""")
     brand_rows = cur.fetchall()
     sites_brands = sql_to_dict(brand_rows, 'site', 'scrapedate')
-    cur.execute("""SELECT DISTINCT site_id FROM products""")
-    sites_products = [x[0] for x in cur.fetchall()]
+    cur.execute("""SELECT site_id, MAX(scrapedate) FROM products GROUP BY site_id""")
+    product_rows = cur.fetchall()
+    sites_products = sql_to_dict(product_rows, 'site_id', 'scrapedate')
     db.close()
 
     if request.method == "POST":

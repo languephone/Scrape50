@@ -37,7 +37,7 @@
                             {% for site in sites_products %}
                             <div class="form-check">
                                 <label class="form-check-label" for="{{ site }}">
-                                {{ site }}
+                                {{ site['site_id'] }}
                                 <span class="badge bg-secondary">
                                         <i>{{ site['scrapedate'] }}</i>
                                     </span>
