@@ -17,21 +17,25 @@ function card_select(target, brand) {
 	});
 };
 
+// check for any checkbox tick or un-tick, and hide/unhide the corresponding
+// product card
 document.addEventListener('change', function(e) {
-	const brand = e.target.name;
-	card_select(e.target, brand);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-	document.querySelector('input[name="Select-All"]').onclick = function() {
+	if (e.target.name == 'Select-All') {
+		// check/uncheck all other boxes to match the state of 'Select-All'
 		const checkboxes = document.querySelectorAll('input[class="brand"]');
 	    for (const checkbox of checkboxes) {
-	        if (checkbox.checked != this.checked) {
+	        if (checkbox.checked != e.target.checked) {
 	        	checkbox.click();
-	        };
-	        checkbox.checked = this.checked;
+	        }
+	        checkbox.checked = e.target.checked;
 	    }
-	};
+	}
+	
+	else {
+		const brand = e.target.name;
+		card_select(e.target, brand);
+	}
+
 });
 
 // let input = document.querySelector('input');
