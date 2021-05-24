@@ -14,14 +14,17 @@
                             <div class="form-check">
                                 <label class="form-check-label" for="{{ site['site'] }}">
                                     {{ site['site'] }}
-                                    <span class="badge bg-secondary">
-                                        <i>{{ site['scrapedate'] }}</i>
-                                    </span>
+                                <span class="badge bg-secondary">
+                                    <i>{{ site['scrapedate'] }}</i>
+                                </span>
                                 </label>
                                 <input class="form-check-input" type="checkbox" id="{{ site['site'] }}" name="brands" value="{{ site['site'] }}">
                             </div>
                             {% endfor %}
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit
+                                <span class="spinner-border spinner-border-sm" role="status" hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -38,7 +41,7 @@
                             <div class="form-check">
                                 <label class="form-check-label" for="{{ site }}">
                                 {{ site['site_id'] }}
-                                <span class="badge bg-secondary">
+                                    <span class="badge bg-secondary">
                                         <i>{{ site['scrapedate'] }}</i>
                                     </span>
                                 </label>
