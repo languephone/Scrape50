@@ -29,14 +29,14 @@
     margin-bottom: 4px;
 }
 
-.logo-box {
+/*.logo-box {
     margin: 30px;
     display:flex;
     min-width: 800px;
     max-width: 1000px;
     align-items: center;
     align-self: center;
-}
+}*/
 
 .logo-text {
     margin: 0px 30px;
