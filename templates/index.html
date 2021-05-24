@@ -2,14 +2,35 @@
 {% set active_page = "home" %}
 
 {% block main %}
-        <div class="container">
-            {% for brand in brands %}
-            <input type="checkbox" name="{{ brand }}" value="{{ brand }}" checked>
-            <label for="{{ brand }}">{{ brand }}</label>
-            {% endfor %}
-        </div>
-        <div class="logo-box">
-            <img src="static/logo_small.png" alt="logo with lipstick icon" class="logo-image">
-            <p class="logo-text">Welcome to Scrape50</p>
+   
+        <div class="container p-5">
+            <div class="row">
+                <div class="col">
+                    <div class="logo-box">
+                        <img src="static/logo_small.png" alt="logo with lipstick icon" class="logo-image">
+                        <p class="logo-text">Welcome to Scrape50</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="/static/brand_card.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Brand Distribution Tracker</h5>
+                            <p class="card-text">Search by brand to see current retailer distribution.</p>
+                            <a href="/brands" class="btn btn-primary">Go to Brand Distribution</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img src="/static/product_card.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Product Price Grid</h5>
+                            <p class="card-text">Display a grid of products to use in pricing slides.</p>
+                            <a href="/brands" class="btn btn-primary">Go to Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 {% endblock %}
