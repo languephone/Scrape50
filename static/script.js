@@ -11,7 +11,7 @@ function card_select(target, brand) {
 				card.style.display = 'none';
 			}
 			else if (target.checked == true) {
-				card.style.display = 'block';
+				card.style.display = 'flex';
 			}
 		}
 	});
