@@ -224,10 +224,10 @@ class HouseOfFraser(Scraper):
         # Get brand names from Look Fantastic
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand FROM products
+        cur.execute("""SELECT DISTINCT brand FROM products
             WHERE site_id='Look Fantastic'
-            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
-            GROUP BY brand""")
+            AND scrapedate=(SELECT MAX(scrapedate) FROM products
+                WHERE site_id='Look Fantastic')""")
         self.lf_brands = [x[0] for x in cur.fetchall()]
         db.close()
 
