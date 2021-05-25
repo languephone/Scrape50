@@ -46,7 +46,7 @@ class Scraper:
         """Clean price values where a range of prices is given"""
 
         # Always choose the higher price by taking the value after the split
-        price = re.split(delimiter, price)[1]
+        price = re.split(delimiter, price)[-1]
         return price
 
 
@@ -335,7 +335,7 @@ class JohnLewis(Scraper):
             try:
                 price = product.find("div",{"class":"price_c-product-card__price__3NI9k"}).text.replace('\n', "").replace("£", "")
                 # For products with a range of prices, take the highest price
-                price = re.split(r' - ', price)[-1]
+                price = self._clean_price(r' - ', price)
             except:
                 price = None
 
