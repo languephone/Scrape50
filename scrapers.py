@@ -34,6 +34,13 @@ class Scraper:
 
         return product_name
 
+    def _clean_price(self, price, delimiter):
+        """Clean price values where a range of prices is given"""
+
+        # Always choose the higher price by taking the value after the split
+        price = re.split(delimiter, price)[1]
+        return price
+
 
     def write_products_to_sql(self):
         """Take a list of dictionaries of scraped data, and write to a SQLite database"""
@@ -277,25 +284,26 @@ class JohnLewis(Scraper):
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
         # TODO find replacement for hard coding category links
         self.categories = {
-            'foundation': '/browse/beauty/makeup/foundations/_/N-7nreZ1yzjnw0',
-            'mascara': 'browse/beauty/makeup/mascaras/_/N-7nreZ1yzjnvx',
-            'serum': 'serums',
-            'moisturisers': 'face-moisturisers',
-            'cleanser': 'cleansers',
-            'eye treatment': 'eye-treatments'
+            'foundation': 'browse/beauty/makeup/foundations/_/N-7nreZ1yzjnw0',
+            'mascara': 'browse/beauty/makeup/mascaras/_/N-7nreZ1yzjnvx'
             }
         self.brand_page = "brands?deptId=a30"
         self.product_data = []
         self.brand_data = []
        
-        # Get brand names from Look Fantastic
+        # Get brand names from SQL product table for data matching
         db = sqlite3.connect('products.db')
         cur = db.cursor()
-        cur.execute("""SELECT brand FROM products
+        # Get brand names for Look Fantastic
+        cur.execute("""SELECT DISTINCT brand FROM products
             WHERE site_id='Look Fantastic'
-            AND scrapedate=(SELECT MAX(scrapedate) FROM products)
-            GROUP BY brand""")
+            AND scrapedate=(SELECT MAX(scrapedate) FROM products
+                WHERE site_id='Look Fantastic')""")
         self.lf_brands = [x[0] for x in cur.fetchall()]
+
+        # Get all brand names from product table
+        cur.execute("""SELECT DISTINCT brand FROM products""")
+        self.all_brands = [x[0] for x in cur.fetchall()]
         db.close()
 
     def get_top_products(self, category):
@@ -307,38 +315,39 @@ class JohnLewis(Scraper):
 
         page = requests.get(link_modified, headers=self.headers).text
         soup = BeautifulSoup(page, 'html.parser')
-        product_grid = soup.find("ul",{"class":"s-productscontainer2"})
-        product_list = product_grid.find_all("li", recursive=False)
+        product_cards = soup.find_all("div",{"data-test":"product-image-container"})
 
-        for product in product_list:
+        for product in product_cards:
 
             try:
-                name = product.get('li-name').replace('\n', "")
+                name = product.img.get('alt').replace('\n', "")
             except:
                 name = None
 
             try:
-                price = product.get('li-price').replace('\n', "").replace("£", "")
+                price = product.find("div",{"class":"price_c-product-card__price__3NI9k"}).text.replace('\n', "").replace("£", "")
+                # For products with a range of prices, take the highest price
+                price = re.split(r' - ', price)[-1]
             except:
                 price = None
 
             try:
-                brand = product.get('li-brand').replace('\n', "")
+                # Brand name doesn't exist, so take first word of product name
+                brand = re.split(r' ', name)[0].replace('\n', "")
+                # Match to existing brand names
+                brand = process.extractOne(brand, self.all_brands)[0]
             except:
                 brand = None
 
             try:
-                product_id = product.get('li-productid').replace('\n', "")
+                product_id = product.parent.get('data-product-id').replace('\n', "")
             except:
                 product_id = None
 
             try:
-                image_link = product.find('img').get('src').replace('\n', "")
+                image_link = product.img.get('src').replace('\n', "")
             except:
-                try:
-                    image_link = product.find('img').get('data-original').replace('\n', "")
-                except:
-                    image_link = None
+                image_link = None
 
             item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
             
