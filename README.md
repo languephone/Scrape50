@@ -1,7 +1,7 @@
 # Scrape50
 ## A final project for CS50 which scrapes websites for data to be used in cosmetics brand competitor analysis.
 
-Video Demo: <URL HERE>
+Video Demo: https://youtu.be/sCcBmjpwqdM
 
 The project consists of three components:
 - A python script using the Beautiful Soup library to scrape retail websites and save product information indcluding brand, product name, image links, and price.
