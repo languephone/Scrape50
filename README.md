@@ -4,6 +4,12 @@
 Video Demo: <URL HERE>
 
 The project consists of three components:
-    1) A python script using the Beautiful Soup library to scrape retail websites and save product information indcluding brand, product name, image links, and price.
-    2) A SQL database which stores the scraped data.
-    3) A Flask web framework to display product information.
+- A python script using the Beautiful Soup library to scrape retail websites and save product information indcluding brand, product name, image links, and price.
+- A SQL database which stores the scraped data.
+- A Flask web framework to display product information.
+
+Languages used:
+- **Python** for the Flask web framework and data cleansing
+- **HTML** for the individual web pages used to display information
+- **CSS** to style the individual web pages
+- **JavaScript** to create interactions between the user and displayed content
