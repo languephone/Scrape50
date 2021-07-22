@@ -19,30 +19,36 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- JQuery -->
-        <script   src="https://code.jquery.com/jquery-3.6.0.min.js"   integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="   crossorigin="anonymous"></script>
 
-        <!-- JQuery AJAX request -->
+        <!-- Vanilla JS AJAX request -->
         <script>
             let input = document.querySelector('input');
             input.addEventListener('keyup', function() {
-                $.get('/search?q=' + input.value, function(brands) {
-                    let html = '';
-                    for (let item in brands)
-                    {
-                        let brand = brands[item].brand;
-                        let site = brands[item].site;
-                        let scrapedate = brands[item].scrapedate;
+                fetch('/search?q=' + input.value)
+                .then(response => response.json())
+                .then(data => {
+                    let table = document.querySelector('tbody');
+                    table.innerHTML = '';
 
-                        html += '<tr>'
-                            + '<td>' + brand + '</td>'
-                            + '<td>' + site + '</td>'
-                            + '<td>' + scrapedate + '</td>'
-                            + '</tr>'
-                    }
-                    document.querySelector('tbody').innerHTML = html;
+                    data.forEach(function(data) {
+                        const table_row = document.createElement('tr');
+                        const brand = document.createElement('td');
+                        const site = document.createElement('td');
+                        const date = document.createElement('td');
+
+                        brand.innerHTML = data.brand;
+                        site.innerHTML = data.site;
+                        date.innerHTML = data.scrapedate;
+
+                        table_row.append(brand);
+                        table_row.append(site);
+                        table_row.append(date);
+
+                        table.append(table_row);
+
+                    });
                 });
             });
         </script>
+
 {% endblock %}
