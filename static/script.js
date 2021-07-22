@@ -30,29 +30,10 @@ document.addEventListener('change', function(e) {
 	        checkbox.checked = e.target.checked;
 	    }
 	}
-	
+
 	else {
 		const brand = e.target.name;
 		card_select(e.target, brand);
 	}
 
 });
-
-// let input = document.querySelector('input');
-// input.addEventListener('keyup', function() {
-//     $.get('/search?q=' + input.value, function(brands) {
-//         let html = '';
-//         for (let item in brands)
-//         {
-//             let brand = brands[item].brand;
-//             let scrapedate = brands[item].scrapedate;
-//             let site = brands[item].site;
-//             html += '<tr>'
-//                 + '<td>' + brand + '</td>'
-//                 + '<td>' + scrapedate + '</td>'
-//                 + '<td>' + site + '</td>'
-//                 + '</tr>'
-//         }
-//         document.querySelector('tbody').innerHTML = html;
-//     });
-// });
