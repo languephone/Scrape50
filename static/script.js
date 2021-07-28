@@ -20,6 +20,7 @@ function card_select(target, brand) {
 // check for any checkbox tick or un-tick, and hide/unhide the corresponding
 // product card
 document.addEventListener('change', function(e) {
+	// If the 'Select All' box has been checked:
 	if (e.target.name == 'Select-All') {
 		// check/uncheck all other boxes to match the state of 'Select-All'
 		const checkboxes = document.querySelectorAll('input[class="brand"]');
@@ -31,6 +32,7 @@ document.addEventListener('change', function(e) {
 	    }
 	}
 
+	// Otherwise a brand box has been checked:
 	else {
 		const brand = e.target.name;
 		card_select(e.target, brand);
