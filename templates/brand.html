@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% set active_page = "brands" %}
 
+{% block script %}
+    <script src="/static/script.js"></script>
+{% endblock script %}
+
 {% block main %}
         <div class="container p-5">
             <input autocomplete="off" autofocus class="form-control" name="q" placeholder="Search Brand Name" type="text">
