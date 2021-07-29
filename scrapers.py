@@ -42,7 +42,7 @@ class Scraper:
             brand_name = brand_name.title()
         return brand_name
 
-    def _clean_price(self, price, delimiter):
+    def _clean_price(self, delimiter, price):
         """Clean price values where a range of prices is given"""
 
         # Always choose the higher price by taking the value after the split
