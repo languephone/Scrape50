@@ -333,7 +333,7 @@ class JohnLewis(Scraper):
                 name = None
 
             try:
-                price = product.find("div",{"class":"price_c-product-card__price__3NI9k"}).text.replace('\n', "").replace("£", "")
+                price = product.find("div",{"class":"price_c-product-card__price__1E0x_"}).text.replace('\n', "").replace("£", "").strip()
                 # For products with a range of prices, take the highest price
                 price = self._clean_price(r' - ', price)
             except:
