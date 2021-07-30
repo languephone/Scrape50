@@ -588,7 +588,7 @@ class Selfridges(Scraper):
         self.base_link = "https://www.selfridges.com/"
         self.sorting_modifier = ""
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
-        self.brand_page = (r"GB/en/cat/OnlineBrandDirectory/?categoryId=548256%252F")
+        self.brand_page = ("GB/en/cat/OnlineBrandDirectory/?categoryId=548256%252F")
         self.brand_data = []
 
     def get_all_brands(self):
