@@ -269,7 +269,7 @@ class HouseOfFraser(Scraper):
                 image_link = product.find('img').get('src').replace('\n', "")
             except:
                 try:
-                    image_link = product.find('img').get('data-original').replace('\n', "")
+                    image_link = product.find('img').get('data-src').replace('\n', "")
                 except:
                     image_link = None
 
