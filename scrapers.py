@@ -541,3 +541,37 @@ class Boots(Scraper):
                 pass
 
             self.brand_data.append(name)
+
+
+class BeautyBay(Scraper):
+    "A class to scrape from the Beauty Bay website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "Beauty Bay"
+        self.base_link = "https://www.beautybay.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        self.brand_page = "pages/brand-directory/"
+        self.brand_data = []
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        letter_list = soup.find_all('ol',{'class': 'alpha-group'})
+
+        for letter in letter_list:
+            brand_list = letter.find_all('a')
+            for brand in brand_list:
+                try:
+                    name = brand.string.replace('\n', "")
+                except:
+                    pass
+
+                self.brand_data.append(name)
