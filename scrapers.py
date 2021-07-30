@@ -609,3 +609,6 @@ class Selfridges(Scraper):
                 pass
 
             self.brand_data.append(name)
+
+        # Quit browser session to close window
+        browser.quit()
