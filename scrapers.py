@@ -4,6 +4,7 @@ import pandas as pd
 import sqlite3
 import re
 from fuzzywuzzy import fuzz, process
+from selenium import webdriver
 
 class Scraper:
     """A class to create a template for sites to be scraped."""
@@ -575,3 +576,36 @@ class BeautyBay(Scraper):
                     pass
 
                 self.brand_data.append(name)
+
+
+class Selfridges(Scraper):
+    "A class to scrape from the Selfridges website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "Selfridges"
+        self.base_link = "https://www.selfridges.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        self.brand_page = (r"GB/en/cat/OnlineBrandDirectory/?categoryId=548256%252F")
+        self.brand_data = []
+
+    def get_all_brands(self):
+        """Scrape list of brands from A-Z brand section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        # Create new browser object to navigate to site
+        browser = webdriver.Safari()
+        browser.get(link_modified)
+        elements = browser.find_elements_by_css_selector('.c-brand-directory-group__item')
+        
+        for element in elements:
+            try:
+                name = element.text
+            except:
+                pass
+
+            self.brand_data.append(name)
