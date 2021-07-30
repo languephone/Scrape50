@@ -110,8 +110,11 @@ def admin():
 def search():
 
     brand = request.args.get("q")
-    if brand == None:
-        brand = ""
+
+    # Clear table when all text removed from text box
+    if brand == '':
+        brands = []
+        return jsonify(brands)
 
     # Create a database connection to a SQLite database
     db = sqlite3.connect('products.db')
