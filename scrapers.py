@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 import pandas as pd
 import sqlite3
 import re
@@ -542,6 +543,60 @@ class Boots(Scraper):
                 pass
 
             self.brand_data.append(name)
+
+
+    def get_no7_products(self):
+        """Scrape info from top products page of specified category link"""
+
+         # Modify link to sort by top sales rank
+        link_modified = self.base_link + 'no7/no7-bestsellers'
+
+        page = requests.get(link_modified, headers=self.headers).text
+        soup = BeautifulSoup(page, 'html.parser')
+        product_list = soup.find_all('div',
+            {'class': 'estore_product_container'})
+
+        for product in product_list:
+
+            data_dict = json.loads(
+                product.find(
+                    'a', {'class': 'product_name_link'}).get('data-value')
+                )
+
+            try:
+                name = data_dict['name']
+            except:
+                name = None
+
+            try:
+                price = data_dict['price'].replace('\n', "").replace("£", "")
+            except:
+                price = None
+
+            try:
+                brand = 'Boots No7'
+            except:
+                brand = None
+
+            try:
+                product_id = data_dict['id']
+            except:
+                product_id = None
+
+            try:
+                image_link = product.find('img',
+                    {'class': 'product_img'}).get('src').replace('\n', "")
+            except:
+                image_link = None
+
+            # TODO: Get category name
+
+            item = {'category': category, 'name': brand + ' ' + name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
+            
+            # Only add in brands not already covered by Look Fantastic
+            if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
+                self.product_data.append(item)
+
 
 
 class BeautyBay(Scraper):
