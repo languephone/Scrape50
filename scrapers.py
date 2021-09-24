@@ -494,7 +494,7 @@ class Next(Scraper):
 
         page = requests.get(link_modified, headers=self.headers).text
         soup = BeautifulSoup(page, 'html.parser')
-        brand_sections = soup.find_all('div', {"class": "col-md-3 bp-brand-name"})
+        brand_sections = soup.find_all('div', {"class": "bp-brand-name"})
 
         for brand in brand_sections:
             try:
