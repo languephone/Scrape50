@@ -154,7 +154,7 @@ class LookFantastic(Scraper):
                 name = product_data.get('data-product-title').replace('\n', "")
             except:
                 name = None
-            
+
             try:
                 # Check for RRP field, which will appear only on discounted products
                 price = product.find('span', {"class": "productBlock_rrpValue"}).text.replace('\n', "").replace("£", "")
@@ -222,7 +222,7 @@ class HouseOfFraser(Scraper):
             'eye treatment': 'eye-treatments'
             }
         self.product_data = []
-       
+
         # Get brand names from Look Fantastic
         db = sqlite3.connect('products.db')
         cur = db.cursor()
@@ -276,7 +276,7 @@ class HouseOfFraser(Scraper):
                     image_link = None
 
             item = {'category': category, 'name': brand + ' ' + name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
-            
+
             # Only add in brands not already covered by Look Fantastic
             if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
                 self.product_data.append(item)
@@ -300,7 +300,7 @@ class JohnLewis(Scraper):
         self.brand_page = "brands?deptId=a30"
         self.product_data = []
         self.brand_data = []
-       
+
         # Get brand names from SQL product table for data matching
         db = sqlite3.connect('products.db')
         cur = db.cursor()
@@ -360,7 +360,7 @@ class JohnLewis(Scraper):
                 image_link = None
 
             item = {'category': category, 'name': name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
-            
+
             # Only add in brands not already covered by Look Fantastic
             if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
                 self.product_data.append(item)
@@ -413,7 +413,7 @@ class CultBeauty(Scraper):
 
         page = requests.get(link_modified).text
         soup = BeautifulSoup(page, 'html.parser')
-        letter_group = soup.find_all('div', {"class": "letterGroup"})
+        letter_group = soup.find_all('div', {"class": "responsiveBrandsPageScroll_panel"})
 
         for letter in letter_group:
             brand_list = letter.find_all('li')
@@ -535,7 +535,7 @@ class Boots(Scraper):
         soup = BeautifulSoup(page, 'html.parser')
         brand_section = soup.find('div', {"id": "brand-lists"})
         brands = brand_section.find_all('a')
-        
+
         for brand in brands:
             try:
                 name = brand.string.replace('\n', "")
@@ -592,7 +592,7 @@ class Boots(Scraper):
             # TODO: Get category name
 
             item = {'category': category, 'name': brand + ' ' + name, 'price': price, 'brand': brand, 'product_id': product_id, 'image_link': image_link, 'site_id': self.site}
-            
+
             # Only add in brands not already covered by Look Fantastic
             if process.extractOne(item['brand'], self.lf_brands, scorer=fuzz.partial_ratio)[1] < 85:
                 self.product_data.append(item)
@@ -656,7 +656,7 @@ class Selfridges(Scraper):
         browser = webdriver.Safari()
         browser.get(link_modified)
         elements = browser.find_elements_by_css_selector('.c-brand-directory-group__item')
-        
+
         for element in elements:
             try:
                 name = element.text
