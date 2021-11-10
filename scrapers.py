@@ -667,3 +667,40 @@ class Selfridges(Scraper):
 
         # Quit browser session to close window
         browser.quit()
+
+
+class NetAPorter(Scraper):
+    "A class to scrape from the Net-a-Porter website."
+
+    def __init__(self):
+        """Initialize attributes of the parent class."""
+        super().__init__()
+        self.site = "Net-a-Porter"
+        self.base_link = "https://www.net-a-porter.com/"
+        self.sorting_modifier = ""
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36'}
+        self.brand_page = ("en-gb/shop/beauty")
+        self.brand_data = []
+
+    def get_all_brands(self):
+        """Scrape list of brands from beauty section of site."""
+
+        # Modify link to add on brands section
+        link_modified = self.base_link + self.brand_page
+
+        # Create new browser object to navigate to site
+        browser = webdriver.Safari()
+        browser.get(link_modified)
+        elements = browser.find_elements_by_css_selector(
+            '.DesignerFilterGroup52 .Filter52__filterLineLabel')
+        
+        for element in elements:
+            try:
+                name = element.text
+            except:
+                pass
+
+            self.brand_data.append(name)
+
+        # Quit browser session to close window
+        browser.quit()
