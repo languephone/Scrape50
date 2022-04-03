@@ -297,7 +297,7 @@ class JohnLewis(Scraper):
             'foundation': 'browse/beauty/makeup/foundations/_/N-7nreZ1yzjnw0',
             'mascara': 'browse/beauty/makeup/mascaras/_/N-7nreZ1yzjnvx'
             }
-        self.brand_page = "brands?deptId=a30"
+        self.brand_page = "https://www.johnlewis.com/brands/beauty/index.html"
         self.product_data = []
         self.brand_data = []
 
