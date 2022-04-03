@@ -467,7 +467,7 @@ class Asos(Scraper):
 
 
 class Next(Scraper):
-    "A class to scrape from the Beauty Bay website."
+    "A class to scrape from the Next website."
 
     def __init__(self):
         """Initialize attributes of the parent class."""
