@@ -146,7 +146,11 @@ class LookFantastic(Scraper):
         product_list = soup.find_all('li', {"class": "productListProducts_product"})
 
         for product in product_list:
-
+            # Sponsored products at top of page use different html structure.
+            # Filter these out by ignoring anything for which product.find()
+            # returns None.
+            if product.find('span', {"class": "js-enhanced-ecommerce-data"}) is None:
+                continue
 
             product_data = product.find('span', {"class": "js-enhanced-ecommerce-data"})
 
